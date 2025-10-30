@@ -80,10 +80,12 @@ export default function BusinessChatbot({ doctorData }) {
       </header>
 
       {/* --- Knowledge Base Upload --- */}
-      <section className="card knowledge-card">
-        <h3 className="card-title">Upload Knowledge Base</h3>
-        <KnowledgeBaseUpload />
-      </section>
+      {!isPublicMode && doctorData && (
+        <section className="card knowledge-card">
+          <h3 className="card-title">Upload Knowledge Base</h3>
+          <KnowledgeBaseUpload doctorData={doctorData} />
+        </section>
+      )}
 
       {/* --- Shareable Link & QR --- */}
       <section className="card share-card">
