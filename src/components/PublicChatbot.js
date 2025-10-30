@@ -1,35 +1,20 @@
-import React, { useState } from "react";
-
 export default function PublicChatbot({ doctorData }) {
+  // Now you can access doctorData inside this component
+  // Example: doctorData.id, doctorData.name, etc.
+
+  // Component state and logic here
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const toggleChat = () => setIsChatOpen((prev) => !prev);
 
+  // Example sendMessage function using doctorData.id
   const sendMessage = async () => {
     if (!input.trim()) return;
     const msg = input.trim();
     setMessages((prev) => [...prev, { text: msg, sender: "user" }]);
     setInput("");
-
-    console.log("Sending message:", msg);
-
-    if (!doctorData) {
-      console.warn("doctorData is undefined!");
-    } else {
-      console.log("doctorData:", doctorData);
-      console.log("doctorData.id:", doctorData.id);
-    }
-
-    if (!doctorData?.id) {
-      console.error("User ID is missing! Cannot call backend.");
-      setMessages((prev) => [
-        ...prev,
-        { text: "Error: User ID missing. Cannot send message.", sender: "bot" },
-      ]);
-      return;
-    }
 
     try {
       const res = await fetch(`https://generalchatbot-production.up.railway.app/api/chat`, {
@@ -38,7 +23,6 @@ export default function PublicChatbot({ doctorData }) {
         body: JSON.stringify({ message: msg, user_id: doctorData.id }),
       });
       const data = await res.json();
-      console.log("Backend reply:", data.reply);
       setMessages((prev) => [...prev, { text: data.reply ?? "No response", sender: "bot" }]);
     } catch (err) {
       console.error("Error fetching chatbot response:", err);
