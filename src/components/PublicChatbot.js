@@ -6,10 +6,11 @@ export default function PublicChatbot() {
   const [input, setInput] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
   const [doctorUsername, setDoctorUsername] = useState("");
+  const [doctorId, setDoctorId] = useState(null);
   const chatEndRef = useRef(null);
 
-  const serverUrl = "https://generalchatbot-production.up.railway.app";
   const backendUrl = "https://web-production-e5ae.up.railway.app";
+  const serverUrl = "https://generalchatbot-production.up.railway.app";
 
   // ---------------- Extract session token from URL ----------------
   const queryParams = new URLSearchParams(window.location.search);
@@ -21,7 +22,9 @@ export default function PublicChatbot() {
 
     const fetchDoctorUsername = async () => {
       try {
-        const res = await fetch(`${backendUrl}/get-doctor-username?session_token=${sessionToken}`);
+        const res = await fetch(
+          `${backendUrl}/get-doctor-username?session_token=${sessionToken}`
+        );
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
         const data = await res.json();
@@ -35,7 +38,29 @@ export default function PublicChatbot() {
     fetchDoctorUsername();
   }, [sessionToken]);
 
-  // ---------------- Step 2: Welcome message ----------------
+  // ---------------- Step 2: Fetch doctor ID using username ----------------
+  useEffect(() => {
+    if (!doctorUsername) return;
+
+    const fetchDoctorId = async () => {
+      try {
+        const res = await fetch(
+          `${backendUrl}/get-doctor-id?username=${encodeURIComponent(doctorUsername)}`
+        );
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+        const data = await res.json();
+        console.log("📦 Doctor ID fetched:", data);
+        setDoctorId(data.doctor_id);
+      } catch (err) {
+        console.error("❌ Error fetching doctor ID:", err);
+      }
+    };
+
+    fetchDoctorId();
+  }, [doctorUsername]);
+
+  // ---------------- Step 3: Add welcome message ----------------
   useEffect(() => {
     if (doctorUsername) {
       const welcomeMsg = {
@@ -53,7 +78,7 @@ export default function PublicChatbot() {
 
   // ---------------- Send message to chatbot ----------------
   const sendMessage = async () => {
-    if (!input.trim() || !doctorUsername) return;
+    if (!input.trim() || !doctorId) return;
 
     const userMsg = input.trim();
     setMessages(prev => [...prev, { text: userMsg, sender: "user" }]);
@@ -61,26 +86,32 @@ export default function PublicChatbot() {
     setIsWaiting(true);
 
     try {
-      const res = await fetch(`${serverUrl}/api/chat-business`, {
+      const res = await fetch(`${serverUrl}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMsg, username: doctorUsername }),
+        body: JSON.stringify({ message: userMsg, user_id: doctorId }),
       });
 
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
 
-      setMessages(prev => [...prev, { text: data.reply ?? "No response", sender: "bot" }]);
+      setMessages(prev => [
+        ...prev,
+        { text: data.reply ?? "No response", sender: "bot" },
+      ]);
     } catch (err) {
       console.error("❌ Error sending message to chatbot:", err);
-      setMessages(prev => [...prev, { text: "Service unavailable", sender: "bot" }]);
+      setMessages(prev => [
+        ...prev,
+        { text: "Service unavailable", sender: "bot" },
+      ]);
     } finally {
       setIsWaiting(false);
     }
   };
 
   // ---------------- Loading state ----------------
-  if (!sessionToken || !doctorUsername) {
+  if (!sessionToken || !doctorUsername || !doctorId) {
     return (
       <div className="chat-container">
         <div className="chat-box">
@@ -121,7 +152,9 @@ export default function PublicChatbot() {
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter") sendMessage(); }}
           />
-          <button className="btn primary" onClick={sendMessage}>Send</button>
+          <button className="btn primary" onClick={sendMessage}>
+            Send
+          </button>
         </div>
       </div>
     </div>
