@@ -6,7 +6,8 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const server = "generalchatbot-production.up.railway.app";
+  const server = "https://generalchatbot-production.up.railway.app";
+
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
