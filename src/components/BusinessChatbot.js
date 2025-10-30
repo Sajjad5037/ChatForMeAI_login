@@ -92,13 +92,7 @@ export default function BusinessChatbot({ doctorData }) {
       </section>
     )}
 
-    {/* --- API Usage --- */}
-    {!isPublicMode && doctorData && (
-      <section className="card api-usage-card">
-        <h3 className="card-title">API Usage</h3>
-        <ApiUsage doctorData={doctorData} />
-      </section>
-    )}
+    
 
     {/* --- Shareable Link & QR --- */}
     <section className="card share-card">
@@ -128,6 +122,13 @@ export default function BusinessChatbot({ doctorData }) {
         )}
       </div>
     </section>
+    {/* --- API Usage --- */}
+    {!isPublicMode && doctorData && (
+      <section className="card api-usage-card">
+        <h3 className="card-title">API Usage</h3>
+        <ApiUsage doctorData={doctorData} />
+      </section>
+    )}
   </div>
 );
 
