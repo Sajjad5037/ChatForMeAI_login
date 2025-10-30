@@ -1,13 +1,13 @@
 /* PublicChatbot.css */
 
 .chat-container {
-  position: fixed;       /* keep it in view */
+  position: fixed;       
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); /* center it */
-  width: 400px;          /* desired width */
-  max-width: 90%;
-  height: 600px;         /* desired height */
+  width: 600px;          /* increased width */
+  max-width: 95%;        /* responsive for mobile */
+  height: 700px;         /* slightly taller */
   max-height: 90%;
   background-color: #f9f9f9;
   border-radius: 12px;
@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   font-family: Arial, sans-serif;
-  z-index: 9999;         /* on top of other elements */
+  z-index: 9999;
 }
 
 .chat-box {
@@ -91,4 +91,25 @@
 
 .chat-input-area .btn.primary:hover {
   background-color: #357ab8;
+}
+
+/* --- Mobile adjustments --- */
+@media (max-width: 768px) {
+  .chat-container {
+    width: 95%;
+    height: 80%;
+  }
+
+  .chat-header {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .chat-input-area input[type="text"] {
+    padding: 6px 10px;
+  }
+
+  .chat-input-area .btn.primary {
+    padding: 6px 12px;
+  }
 }
