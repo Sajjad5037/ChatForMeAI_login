@@ -150,7 +150,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
   // --- shareable url (kept behavior) ---
   const shareableUrl =
     publicToken && sessionToken
-      ? `${window.location.origin}/chatbot?publicToken=${publicToken}&sessionToken=${sessionToken}`
+      ? `${window.location.origin}/dashboard?publicToken=${publicToken}&sessionToken=${sessionToken}`
       : "Fetching URL...";
 
   // generate QR when both tokens ready
