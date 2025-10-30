@@ -78,47 +78,56 @@ export default function BusinessChatbot({ doctorData }) {
 
   // ----------- ADMIN VIEW -----------
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1 className="dashboard-title">Business Chatbot Center</h1>
-      </header>
+  <div className="dashboard-container">
+    <header className="dashboard-header">
+      <h1 className="dashboard-title">Business Chatbot Center</h1>
+    </header>
 
-      {/* --- Knowledge Base Upload --- */}
-      {!isPublicMode && doctorData && (
-        <section className="card knowledge-card">
-          <h3 className="card-title">Upload Knowledge Base</h3>
-          <KnowledgeBaseUpload doctorData={doctorData} />
-        </section>
-      )}
-
-      {/* --- Shareable Link & QR --- */}
-      <section className="card share-card">
-        <h3 className="card-title">Shareable Link & QR</h3>
-        <div className="share-row">
-          <input
-            type="text"
-            readOnly
-            value={shareableUrl}
-            className="text-input full"
-          />
-          <button
-            className="btn ghost"
-            onClick={() => navigator.clipboard.writeText(shareableUrl)}
-          >
-            Copy
-          </button>
-          {qrCodeUrl && (
-            <a
-              className="qr-anchor"
-              href={qrCodeUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Open QR
-            </a>
-          )}
-        </div>
+    {/* --- Knowledge Base Upload --- */}
+    {!isPublicMode && doctorData && (
+      <section className="card knowledge-card">
+        <h3 className="card-title">Upload Knowledge Base</h3>
+        <KnowledgeBaseUpload doctorData={doctorData} />
       </section>
-    </div>
-  );
+    )}
+
+    {/* --- API Usage --- */}
+    {!isPublicMode && doctorData && (
+      <section className="card api-usage-card">
+        <h3 className="card-title">API Usage</h3>
+        <ApiUsage doctorData={doctorData} />
+      </section>
+    )}
+
+    {/* --- Shareable Link & QR --- */}
+    <section className="card share-card">
+      <h3 className="card-title">Shareable Link & QR</h3>
+      <div className="share-row">
+        <input
+          type="text"
+          readOnly
+          value={shareableUrl}
+          className="text-input full"
+        />
+        <button
+          className="btn ghost"
+          onClick={() => navigator.clipboard.writeText(shareableUrl)}
+        >
+          Copy
+        </button>
+        {qrCodeUrl && (
+          <a
+            className="qr-anchor"
+            href={qrCodeUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open QR
+          </a>
+        )}
+      </div>
+    </section>
+  </div>
+);
+
 }
