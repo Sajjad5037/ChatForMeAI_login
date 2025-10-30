@@ -436,12 +436,12 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
           </div>
         )}
       </section>
-      {!isPublicMode && (
-        <section className="card knowledge-card">
-          <h3 className="card-title">Upload Knowledge Base</h3>
-          <KnowledgeBaseUpload />
-        </section>
-      )}
+        {!isPublicMode && (
+          <section className="card knowledge-card">
+            <h3 className="card-title">Upload Knowledge Base</h3>
+            <KnowledgeBaseUpload doctorData={doctorData} />
+          </section>
+        )}
 
       {!isPublicMode && (
         <div className="bottom-row">
