@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./PublicChatbot.css"; // make sure you have a CSS file for full chat styles
+import "./PublicChatbot.css"; // Make sure your CSS handles centering & styling
 
 export default function PublicChatbot({ doctorData }) {
   const [messages, setMessages] = useState([]);
@@ -7,12 +7,12 @@ export default function PublicChatbot({ doctorData }) {
   const [isWaiting, setIsWaiting] = useState(false);
   const chatEndRef = useRef(null);
 
-  // Log doctorData on first render
-  useEffect(() => {
-    console.log("DEBUG: doctorData:", doctorData);
-  }, []);
+  // Show loading until doctorData is available
+  if (!doctorData) {
+    return <div className="chat-loading">Loading chatbot...</div>;
+  }
 
-  // Optional: welcome message
+  // Welcome message when doctorData.name is available
   useEffect(() => {
     if (doctorData?.name) {
       const welcomeMsg = {
@@ -23,62 +23,45 @@ export default function PublicChatbot({ doctorData }) {
     }
   }, [doctorData?.name]);
 
-  // Auto-scroll to bottom
+  // Auto-scroll on new messages or waiting state
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isWaiting]);
 
+  // Send message function
   const sendMessage = async () => {
-  if (!input.trim()) return;
-  if (!doctorData?.id) {
-    console.error("🚨 Doctor ID missing, cannot send message");
-    return;
-  }
+    if (!input.trim() || !doctorData?.id) return;
 
-  const msg = input.trim();
-  setMessages((prev) => [...prev, { text: msg, sender: "user" }]);
-  setInput("");
-  setIsWaiting(true);
+    const msg = input.trim();
+    setMessages((prev) => [...prev, { text: msg, sender: "user" }]);
+    setInput("");
+    setIsWaiting(true);
 
-  try {
-    const response = await fetch(
-      "https://generalchatbot-production.up.railway.app/api/chat",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: msg,
-          user_id: doctorData.id, // must match backend's user_id
-        }),
-      }
-    );
+    try {
+      const res = await fetch(
+        `https://generalchatbot-production.up.railway.app/api/chat`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg, user_id: doctorData.id }),
+        }
+      );
 
-    if (!response.ok) {
-      console.error(`🚨 Backend returned status ${response.status}`);
+      const data = await res.json();
+      setMessages((prev) => [
+        ...prev,
+        { text: data.reply ?? "No response", sender: "bot" },
+      ]);
+    } catch (err) {
+      console.error("Error fetching chatbot response:", err);
       setMessages((prev) => [
         ...prev,
         { text: "Service unavailable", sender: "bot" },
       ]);
-      return;
+    } finally {
+      setIsWaiting(false);
     }
-
-    const data = await response.json();
-    console.log("💬 Bot response:", data);
-
-    setMessages((prev) => [
-      ...prev,
-      { text: data.reply ?? "No response", sender: "bot" },
-    ]);
-  } catch (err) {
-    console.error("🚨 Error sending message:", err);
-    setMessages((prev) => [
-      ...prev,
-      { text: "Service unavailable", sender: "bot" },
-    ]);
-  } finally {
-    setIsWaiting(false);
-  }
-};
+  };
 
   return (
     <div className="chat-container">
@@ -87,7 +70,10 @@ export default function PublicChatbot({ doctorData }) {
 
         <div className="chat-messages">
           {messages.map((m, i) => (
-            <div key={i} className={`chat-bubble ${m.sender === "user" ? "user" : "bot"}`}>
+            <div
+              key={i}
+              className={`chat-bubble ${m.sender === "user" ? "user" : "bot"}`}
+            >
               {m.text}
             </div>
           ))}
@@ -102,12 +88,16 @@ export default function PublicChatbot({ doctorData }) {
         <div className="chat-input-area">
           <input
             type="text"
-            placeholder="Type a message..."
+            placeholder="Type your message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") sendMessage(); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") sendMessage();
+            }}
           />
-          <button className="btn primary" onClick={sendMessage}>Send</button>
+          <button className="btn primary" onClick={sendMessage}>
+            Send
+          </button>
         </div>
       </div>
     </div>
