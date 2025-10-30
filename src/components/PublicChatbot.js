@@ -29,29 +29,56 @@ export default function PublicChatbot({ doctorData }) {
   }, [messages, isWaiting]);
 
   const sendMessage = async () => {
-    if (!input.trim() || !doctorData?.id) return;
+  if (!input.trim()) return;
+  if (!doctorData?.id) {
+    console.error("🚨 Doctor ID missing, cannot send message");
+    return;
+  }
 
-    const msg = input.trim();
-    setMessages((prev) => [...prev, { text: msg, sender: "user" }]);
-    setInput("");
-    setIsWaiting(true);
+  const msg = input.trim();
+  setMessages((prev) => [...prev, { text: msg, sender: "user" }]);
+  setInput("");
+  setIsWaiting(true);
 
-    try {
-      const res = await fetch(`https://generalchatbot-production.up.railway.app/api/chat`, {
+  try {
+    const response = await fetch(
+      "https://generalchatbot-production.up.railway.app/api/chat",
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, user_id: doctorData.id }),
-      });
+        body: JSON.stringify({
+          message: msg,
+          user_id: doctorData.id, // must match backend's user_id
+        }),
+      }
+    );
 
-      const data = await res.json();
-      setMessages((prev) => [...prev, { text: data.reply ?? "No response", sender: "bot" }]);
-    } catch (err) {
-      console.error("Error fetching chatbot response:", err);
-      setMessages((prev) => [...prev, { text: "Service unavailable", sender: "bot" }]);
-    } finally {
-      setIsWaiting(false);
+    if (!response.ok) {
+      console.error(`🚨 Backend returned status ${response.status}`);
+      setMessages((prev) => [
+        ...prev,
+        { text: "Service unavailable", sender: "bot" },
+      ]);
+      return;
     }
-  };
+
+    const data = await response.json();
+    console.log("💬 Bot response:", data);
+
+    setMessages((prev) => [
+      ...prev,
+      { text: data.reply ?? "No response", sender: "bot" },
+    ]);
+  } catch (err) {
+    console.error("🚨 Error sending message:", err);
+    setMessages((prev) => [
+      ...prev,
+      { text: "Service unavailable", sender: "bot" },
+    ]);
+  } finally {
+    setIsWaiting(false);
+  }
+};
 
   return (
     <div className="chat-container">
