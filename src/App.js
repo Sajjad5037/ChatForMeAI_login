@@ -75,7 +75,7 @@ function LoginPage({ setIsLoggedIn, setDoctorData, setSessionToken }) {
       if (data?.id === 1) {
         console.log("Navigating to AdminPanel");
         navigate("/AdminPanel");
-      } else if (data?.specialization === "business_chatbot") {
+      } else if (data?.specialization === "bussiness_chatbot") {
         console.log("Navigating to Chatbot");
         navigate("/Chatbot");
       } else {
