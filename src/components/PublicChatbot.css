@@ -1,13 +1,24 @@
 /* PublicChatbot.css */
 
+/* ---------- Overlay with light blue background ---------- */
+.chat-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #d0e7ff; /* complementary light blue */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+
+/* ---------- Chat Container ---------- */
 .chat-container {
-  position: fixed;       
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* center it */
-  width: 800px;          /* increased width */
-  max-width: 95%;        /* responsive for mobile */
-  height: 700px;         /* slightly taller */
+  width: 800px;          /* wide on desktop */
+  max-width: 95%;        /* responsive for smaller screens */
+  height: 700px;
   max-height: 90%;
   background-color: #f9f9f9;
   border-radius: 12px;
@@ -18,14 +29,9 @@
   z-index: 9999;
 }
 
-.chat-box {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
+/* ---------- Header ---------- */
 .chat-header {
-  background-color: #4a90e2;
+  background-color: #4a90e2; /* medium blue */
   color: white;
   padding: 12px;
   font-weight: bold;
@@ -33,6 +39,13 @@
   text-align: center;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
+}
+
+/* ---------- Chat Messages ---------- */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .chat-messages {
@@ -45,19 +58,21 @@
   background-color: #fff;
 }
 
+/* ---------- Chat Bubbles ---------- */
 .chat-bubble {
-  max-width: 75%;
+  max-width: 80%; /* slightly wider to fill larger container */
   padding: 8px 12px;
   border-radius: 16px;
+  word-wrap: break-word;
 }
 
 .chat-bubble.user {
-  background-color: #dcf8c6;
+  background-color: #dcf8c6; /* light green */
   align-self: flex-end;
 }
 
 .chat-bubble.bot {
-  background-color: #eee;
+  background-color: #eeeeee; /* light gray */
   align-self: flex-start;
 }
 
@@ -66,6 +81,7 @@
   opacity: 0.7;
 }
 
+/* ---------- Input Area ---------- */
 .chat-input-area {
   display: flex;
   padding: 12px;
@@ -87,13 +103,14 @@
   color: white;
   border: none;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .chat-input-area .btn.primary:hover {
   background-color: #357ab8;
 }
 
-/* --- Mobile adjustments --- */
+/* ---------- Mobile Adjustments ---------- */
 @media (max-width: 768px) {
   .chat-container {
     width: 95%;
@@ -103,6 +120,10 @@
   .chat-header {
     font-size: 16px;
     padding: 10px;
+  }
+
+  .chat-bubble {
+    max-width: 90%;
   }
 
   .chat-input-area input[type="text"] {
