@@ -15,6 +15,7 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
   };
 
   const handleUpload = async () => {
+  // Basic validations
   if (!file) {
     setMessage("Please select a PDF file first.");
     return;
@@ -30,9 +31,10 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
     return;
   }
 
+  // Prepare FormData including the PDF and user ID
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("user_id", doctorData.id); // send the required user ID
+  formData.append("user_id", doctorData.id.toString()); // ensure it's a string
 
   try {
     setUploading(true);
@@ -48,11 +50,16 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
       setMessage(`✅ Knowledge base uploaded successfully! ID: ${data.knowledge_base_id}`);
       setFile(null);
     } else {
-      const errorData = await response.json();
-      setMessage(`❌ Upload failed: ${errorData.detail || "Unknown error"}`);
+      // Try to parse error details
+      let errorText = "Unknown error";
+      try {
+        const errorData = await response.json();
+        errorText = errorData.detail || errorText;
+      } catch {}
+      setMessage(`❌ Upload failed: ${errorText}`);
     }
   } catch (error) {
-    console.error(error);
+    console.error("Upload error:", error);
     setMessage("⚠️ Network error. Please try again later.");
   } finally {
     setUploading(false);
