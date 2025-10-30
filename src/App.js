@@ -31,9 +31,38 @@ function BusinessChatbotWrapper({ setIsLoggedIn, doctorData, isLoggedIn }) {
   const publicToken = queryParams.get("publicToken");
   const sessionToken = queryParams.get("sessionToken");
 
-  if (publicToken) return <BusinessChatbot setIsLoggedIn={setIsLoggedIn} doctorData={null} publicToken={publicToken} sessionToken={sessionToken} />;
-  if (!isLoggedIn) return <Navigate to="/" />;
-  return <BusinessChatbot setIsLoggedIn={setIsLoggedIn} doctorData={doctorData} publicToken={publicToken} sessionToken={sessionToken} />;
+  console.log("🚦 BusinessChatbotWrapper render");
+  console.log("doctorData:", doctorData);
+  console.log("isLoggedIn:", isLoggedIn);
+  console.log("publicToken:", publicToken);
+  console.log("sessionToken:", sessionToken);
+
+  if (publicToken) {
+    console.log("Rendering BusinessChatbot in public mode, doctorData will be null");
+    return (
+      <BusinessChatbot
+        setIsLoggedIn={setIsLoggedIn}
+        doctorData={null}
+        publicToken={publicToken}
+        sessionToken={sessionToken}
+      />
+    );
+  }
+
+  if (!isLoggedIn) {
+    console.log("User is not logged in, redirecting to /");
+    return <Navigate to="/" />;
+  }
+
+  console.log("Rendering BusinessChatbot in private mode with doctorData");
+  return (
+    <BusinessChatbot
+      setIsLoggedIn={setIsLoggedIn}
+      doctorData={doctorData}
+      publicToken={publicToken}
+      sessionToken={sessionToken}
+    />
+  );
 }
 
 // Login Page
