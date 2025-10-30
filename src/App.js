@@ -46,35 +46,52 @@ function LoginPage({ setIsLoggedIn, setDoctorData, setSessionToken }) {
   const server = "https://web-production-e5ae.up.railway.app";
 
   const handleLogin = async () => {
-    try {
-      setIsLoggedIn(false);
-      setDoctorData(null);
+  try {
+    console.log("Login attempt started for username:", username);
 
-      const response = await fetch(`${server}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, password }),
-      });
+    setIsLoggedIn(false);
+    setDoctorData(null);
 
-      const data = await response.json();
+    const response = await fetch(`${server}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ username, password }),
+    });
 
-      if (response.ok) {
-        setIsLoggedIn(true);
-        setDoctorData(data);
-        setSessionToken(data.session_token || null);
-        setError(null);
+    console.log("Received response from server:", response);
 
-        if (data?.id === 1) navigate("/AdminPanel");
-        else if (data?.specialization === "business_chatbot") navigate("/Chatbot");
-        else navigate("/dashboard");
+    const data = await response.json();
+    console.log("Parsed JSON data:", data);
+
+    if (response.ok) {
+      console.log("Login successful for user ID:", data?.id);
+
+      setIsLoggedIn(true);
+      setDoctorData(data);
+      setSessionToken(data.session_token || null);
+      setError(null);
+
+      if (data?.id === 1) {
+        console.log("Navigating to AdminPanel");
+        navigate("/AdminPanel");
+      } else if (data?.specialization === "business_chatbot") {
+        console.log("Navigating to Chatbot");
+        navigate("/Chatbot");
       } else {
-        setError(data.error || "Invalid credentials");
+        console.log("Navigating to default dashboard");
+        navigate("/dashboard");
       }
-    } catch (err) {
-      setError("Failed to login");
+    } else {
+      console.error("Login failed:", data.error || "Invalid credentials");
+      setError(data.error || "Invalid credentials");
     }
-  };
+  } catch (err) {
+    console.error("Error during login:", err);
+    setError("Failed to login");
+  }
+};
+
 
   const handleSignUp = () => navigate("/signup");
 
