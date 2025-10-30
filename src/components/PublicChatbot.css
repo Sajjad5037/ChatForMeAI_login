@@ -1,6 +1,8 @@
+/* PublicChatbot.css */
+
 /* ---------- Full-screen wrapper ---------- */
 .chat-wrapper {
-  position: fixed;
+  position: fixed;       /* cover the entire viewport */
   top: 0;
   left: 0;
   width: 100vw;
@@ -18,8 +20,8 @@
 .chat-container {
   flex: 1;                   /* fill all vertical space of wrapper */
   width: 100%;
-  max-width: 800px;          /* optional max width */
-  background-color: #f9f9f9;
+  max-width: 800px;          /* optional max width for desktop */
+  background-color: #f9f9f9; /* chatbot background */
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   display: flex;
@@ -30,13 +32,13 @@
 
 /* ---------- Header ---------- */
 .chat-header {
-  background-color: #4a90e2;
+  background-color: #4a90e2; /* medium blue */
   color: white;
   padding: 12px;
   font-weight: bold;
   font-size: 18px;
   text-align: center;
-  flex-shrink: 0;
+  flex-shrink: 0;           /* prevent shrinking */
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
@@ -97,6 +99,7 @@
   padding: 8px 12px;
   border-radius: 16px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 .chat-input-area .btn.primary {
@@ -117,7 +120,7 @@
 @media (max-width: 768px) {
   .chat-container {
     width: 95%;
-    flex: 1;               /* fill vertical space on mobile */
+    flex: 1;              /* fill vertical space on mobile */
   }
 
   .chat-header {
@@ -129,11 +132,22 @@
     max-width: 90%;
   }
 
+  .chat-input-area {
+    padding: 6px;
+    gap: 6px;
+  }
+
   .chat-input-area input[type="text"] {
     padding: 6px 10px;
+    font-size: 14px;
+    flex: 1 1 auto;       /* allow shrinking */
+    min-width: 0;         /* prevent overflow */
+    box-sizing: border-box;
   }
 
   .chat-input-area .btn.primary {
-    padding: 6px 12px;
+    padding: 6px 10px;    /* smaller button */
+    flex-shrink: 0;       /* keep visible */
+    font-size: 14px;
   }
 }
