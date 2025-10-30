@@ -112,7 +112,7 @@ export default function PublicChatbot() {
     <div className="chat-wrapper">
       <div className="chat-container">
         <div className="chat-box">
-          <div className="chat-header">Gem AI</div>
+          <div className="chat-header">AI Chatbot</div>
 
           <div className="chat-messages">
             {/* Loading state or actual messages */}
