@@ -126,6 +126,7 @@ export default function PublicChatbot() {
 
   // ---------------- Render full chat ----------------
   return (
+  <div className="chat-wrapper">
     <div className="chat-container">
       <div className="chat-box">
         <div className="chat-header">Gem AI</div>
@@ -158,5 +159,7 @@ export default function PublicChatbot() {
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
 }
