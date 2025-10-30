@@ -13,6 +13,10 @@ export default function BusinessChatbot({ doctorData }) {
   const publicTokenFromUrl = queryParams.get("publicToken");
   const sessionTokenFromUrl = queryParams.get("sessionToken");
 
+   // --- Debug doctorData ---
+  console.log("DEBUG: doctorData in BusinessChatbot:", doctorData);
+  console.log("DEBUG: doctorData.id in BusinessChatbot:", doctorData?.id);
+
   const sessionToken =
     doctorData?.session_token ||
     sessionTokenFromUrl ||
