@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 export default function PublicChatbot({ doctorData }) {
   // Now you can access doctorData inside this component
   // Example: doctorData.id, doctorData.name, etc.
