@@ -1,0 +1,64 @@
+.knowledge-upload-card {
+  background: #1e1e2f;
+  border: 1px solid #2a2a40;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 20px auto;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.knowledge-upload-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+.upload-title {
+  font-size: 1.3rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.file-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #2a2a40;
+  color: #d1d1e0;
+  border: 1px solid #3b3b55;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.file-input:hover {
+  border-color: #4a4a70;
+}
+
+.upload-button {
+  background: linear-gradient(90deg, #4a90e2, #357abd);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.upload-button:hover {
+  background: linear-gradient(90deg, #5aa0f2, #3e89cf);
+}
+
+.upload-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.upload-message {
+  margin-top: 12px;
+  color: #d1d1e0;
+  font-size: 0.95rem;
+}

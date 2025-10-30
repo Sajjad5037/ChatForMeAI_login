@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Global box sizing reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Shrink global font size (like pressing Ctrl + - once or twice) */
+html {
+  font-size: 13px; /* default is 16px → this shrinks everything */
+  scroll-behavior: smooth;
+}
