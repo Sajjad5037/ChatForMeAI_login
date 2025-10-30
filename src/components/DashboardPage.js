@@ -56,7 +56,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
     setInput("");
 
     try {
-      const res = await fetch(`${server}/api/chat`, {
+      const res = await fetch(`https://generalchatbot-production.up.railway.app/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg, user_id: doctorId }),
