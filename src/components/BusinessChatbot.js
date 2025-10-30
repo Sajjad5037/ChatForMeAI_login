@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import KnowledgeBaseUpload from "./KnowledgeBaseUpload";
 import PublicChatbot from "./PublicChatbot"; // <-- import public chatbot
 import "./BusinessChatbot.css";
+import ApiUsage from "./ApiUsage";
 
 export default function BusinessChatbot({ doctorData }) {
   const server = "https://web-production-e5ae.up.railway.app";
