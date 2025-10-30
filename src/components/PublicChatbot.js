@@ -1,103 +1,80 @@
-import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import "./PublicChatbot.css";
+import React, { useState } from "react";
 
 export default function PublicChatbot({ doctorData }) {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const publicToken = queryParams.get("publicToken");
-  const sessionToken = queryParams.get("sessionToken");
-
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [isWaiting, setIsWaiting] = useState(false);
-  const chatEndRef = useRef(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
-  const server = "https://generalchatbot-production.up.railway.app";
+  const toggleChat = () => setIsChatOpen((prev) => !prev);
 
-  // ------------------ Initial welcome ------------------
-  useEffect(() => {
-    const welcomeMsg = {
-      sender: "bot",
-      text: `Hello! Welcome to our AI chat service.`,
-    };
-    setMessages([welcomeMsg]);
-  }, []);
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+    const msg = input.trim();
+    setMessages((prev) => [...prev, { text: msg, sender: "user" }]);
+    setInput("");
 
-  // ------------------ Auto-scroll ------------------
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isWaiting]);
+    console.log("Sending message:", msg);
 
-  // ------------------ Send message ------------------
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!input.trim()) return;
+    if (!doctorData) {
+      console.warn("doctorData is undefined!");
+    } else {
+      console.log("doctorData:", doctorData);
+      console.log("doctorData.id:", doctorData.id);
+    }
 
-  const userInput = input.trim();
-  setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
-  setInput("");
-  setIsWaiting(true);
+    if (!doctorData?.id) {
+      console.error("User ID is missing! Cannot call backend.");
+      setMessages((prev) => [
+        ...prev,
+        { text: "Error: User ID missing. Cannot send message.", sender: "bot" },
+      ]);
+      return;
+    }
 
-  try {
-    const res = await fetch(`${server}/api/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: userInput,
-        user_id: doctorData?.id,  // send user_id for backend
-      }),
-    });
-
-    const data = await res.json();
-    setMessages((prev) => [
-      ...prev,
-      { sender: "bot", text: data.reply ?? "No response" },
-    ]);
-  } catch (err) {
-    console.error("Error fetching chatbot response:", err);
-    setMessages((prev) => [
-      ...prev,
-      { sender: "bot", text: "Service unavailable" },
-    ]);
-  } finally {
-    setIsWaiting(false);
-  }
-};
+    try {
+      const res = await fetch(`https://generalchatbot-production.up.railway.app/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg, user_id: doctorData.id }),
+      });
+      const data = await res.json();
+      console.log("Backend reply:", data.reply);
+      setMessages((prev) => [...prev, { text: data.reply ?? "No response", sender: "bot" }]);
+    } catch (err) {
+      console.error("Error fetching chatbot response:", err);
+      setMessages((prev) => [...prev, { text: "Service unavailable", sender: "bot" }]);
+    }
+  };
 
   return (
-    <div className="chatbot-fullscreen">
-      <div className="chatbot-container">
-        <div className="chatbot-header"> Your Virtual Assistant</div>
+    <>
+      <button className="chat-toggle" onClick={toggleChat}>
+        {isChatOpen ? "Close Chat" : "Chat with us"}
+      </button>
 
-        <div className="chatbot-messages">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`chatbot-message ${msg.sender === "user" ? "user" : "bot"}`}
-            >
-              {msg.text}
-            </div>
-          ))}
-          {isWaiting && (
-            <div className="chatbot-message bot waiting">
-              <div className="spinner"></div>
-              <span>Waiting for response...</span>
-            </div>
-          )}
-          <div ref={chatEndRef} />
+      {isChatOpen && (
+        <div className="chat-window">
+          <div className="chat-messages">
+            {messages.map((m, i) => (
+              <div key={i} className={`chat-bubble ${m.sender === "user" ? "user" : "bot"}`}>
+                {m.text}
+              </div>
+            ))}
+          </div>
+
+          <div className="chat-input-area">
+            <input
+              type="text"
+              className="text-input"
+              placeholder="Type a message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") sendMessage(); }}
+            />
+            <button className="btn primary" onClick={sendMessage}>Send</button>
+          </div>
         </div>
-
-        <form className="chatbot-input-area" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Type your query..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button type="submit">Send</button>
-        </form>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
