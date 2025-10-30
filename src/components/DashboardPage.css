@@ -67,7 +67,7 @@ body {
 .meta-value {
   font-size: 1.05rem;
   margin-top: 6px;
-  color: var(--text);
+  color: #f1f3f8;  /* brighter text for better visibility */
   font-weight: 600;
 }
 
@@ -97,18 +97,27 @@ body {
   padding: 0;
   margin: 0;
 }
+
 .patient-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255,255,255,0.02);
+  background: #f0f0f0;       /* light grey background for contrast */
   border-radius: 8px;
   padding: 10px 14px;
   margin-bottom: 10px;
-  color: var(--text);
+  color: #1f1f1f;             /* dark text for visibility */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08); /* subtle depth */
 }
-.patient-name { font-weight: 600; }
-.patient-wait { color: var(--accent); font-weight: 700; }
+
+.patient-name {
+  font-weight: 600;
+}
+
+.patient-wait {
+  color: #0077cc;             /* more visible accent color */
+  font-weight: 700;
+}
 
 /* actions */
 .actions-row {
@@ -146,15 +155,21 @@ body {
 .text-input.full { min-width: 360px; width: 100%; max-width: 520px; }
 
 /* notices */
-.notices-ul { list-style: none; padding: 0; margin: 0; }
+.notices-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .notice-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.08); /* stronger contrast */
   border-radius: 8px;
   padding: 10px 14px;
   margin-bottom: 10px;
+  color: #f1f3f8; /* brighter text for visibility */
 }
 
 /* notice form */
@@ -170,16 +185,17 @@ body {
   width: 100%;
   min-height: 80px;
   max-width: 100%;
-  background: #ffffff;         /* white background for clarity */
-  color: #1f1f1f;             /* dark text for visibility */
+  background: rgba(255, 255, 255, 0.05); /* subtle darkened background */
+  color: #f1f3f8; /* bright text for readability */
   border-radius: 8px;
   padding: 10px;
-  border: 1px solid rgba(0,0,0,0.15);  /* subtle border for definition */
+  border: 1px solid rgba(255, 255, 255, 0.12); /* visible but soft border */
 }
 
 .text-area::placeholder {
-  color: #888888;              /* muted placeholder */
+  color: #b0b8c1; /* slightly muted placeholder but readable */
 }
+
 
 /* small layout bits */
 .muted { color: var(--muted); font-style: italic; }
