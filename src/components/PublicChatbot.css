@@ -1,34 +1,31 @@
-/* PublicChatbot.css */
-
 /* ---------- Full-screen wrapper ---------- */
 .chat-wrapper {
-  position: fixed;      /* cover the full screen */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   background-color: #d0e7ff; /* light blue background */
   display: flex;
-  justify-content: center; /* center horizontally */
-  align-items: center;     /* center vertically */
-  padding: 20px;           /* spacing for mobile screens */
+  flex-direction: column;     /* stack children vertically */
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
   z-index: 9998;
 }
 
 /* ---------- Chat Container ---------- */
 .chat-container {
-  width: 800px;          /* desktop width */
-  max-width: 100%;       /* responsive */
-  height: 100%;          /* fill available vertical space */
-  max-height: 90vh;      /* don’t exceed viewport */
-  background-color: #f9f9f9; /* chatbot background */
+  flex: 1;                   /* fill all vertical space of wrapper */
+  width: 100%;
+  max-width: 800px;          /* optional max width */
+  background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
-  z-index: 9999;
   overflow: hidden;
+  margin: auto;               /* center horizontally */
 }
 
 /* ---------- Header ---------- */
@@ -39,19 +36,20 @@
   font-weight: bold;
   font-size: 18px;
   text-align: center;
+  flex-shrink: 0;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  flex-shrink: 0;
 }
 
 /* ---------- Chat Box ---------- */
 .chat-box {
+  flex: 1;                   /* take all remaining height */
   display: flex;
   flex-direction: column;
-  flex: 1;
   overflow: hidden;
 }
 
+/* ---------- Messages ---------- */
 .chat-messages {
   flex: 1;
   padding: 12px;
@@ -91,7 +89,7 @@
   padding: 12px;
   gap: 8px;
   border-top: 1px solid #ccc;
-  flex-shrink: 0;
+  flex-shrink: 0;           /* keeps input visible */
 }
 
 .chat-input-area input[type="text"] {
@@ -119,7 +117,7 @@
 @media (max-width: 768px) {
   .chat-container {
     width: 95%;
-    height: 80%;
+    flex: 1;               /* fill vertical space on mobile */
   }
 
   .chat-header {
