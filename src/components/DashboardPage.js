@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import PatientList from "./PatientList"; // kept (if unused you can remove)
 import "./DashboardPage.css";
 import KnowledgeBaseUpload from "./KnowledgeBaseUpload";
+import ApiUsage from "./ApiUsage";
+
 
 /**
  * DashboardPage
@@ -440,6 +442,13 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
           <section className="card knowledge-card">
             <h3 className="card-title">Upload Knowledge Base</h3>
             <KnowledgeBaseUpload doctorData={doctorData} />
+          </section>
+        )}
+        </section>
+        {!isPublicMode && (
+          <section className="card api-usage-card">
+            <h3 className="card-title">API Usage</h3>
+            <ApiUsage doctorData={doctorData} />
           </section>
         )}
 
