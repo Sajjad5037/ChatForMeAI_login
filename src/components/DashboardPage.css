@@ -1,11 +1,11 @@
-/* DashboardPage.css - Dark Theme with enhanced text visibility */
+/* DashboardPage.css - Subtle Dark Theme with polished readability */
 
 /* --- Global --- */
 :root {
   --bg: #0f1113;
   --panel: #15171a;
-  --muted: #9aa3ad;
-  --text: #f1f3f8;          /* brighter text globally */
+  --muted: #8f98a3;
+  --text: #dce1e8;
   --accent: #59a6ff;
   --accent-2: #3db3a6;
   --card-shadow: rgba(0,0,0,0.6);
@@ -54,26 +54,26 @@ body {
   flex-wrap: wrap;
 }
 .meta-card {
-  background: rgba(255,255,255,0.08); /* brighter card for text visibility */
+  background: rgba(255,255,255,0.08);
   border-radius: 12px;
   padding: 12px 16px;
   box-shadow: 0 8px 20px var(--card-shadow);
   width: 220px;
 }
 .meta-title {
-  color: var(--muted);
+  color: #a0a9b5;  /* readable but muted */
   font-size: 0.85rem;
 }
 .meta-value {
   font-size: 1.05rem;
   margin-top: 6px;
-  color: #ffffff; /* bright for visibility */
+  color: #dce1e8;  /* soft off-white */
   font-weight: 600;
 }
 
 /* Cards */
 .card {
-  background: rgba(21,23,26,0.95); /* subtle dark panel */
+  background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.02));
   border-radius: 12px;
   padding: 18px;
   margin: 18px 0;
@@ -100,16 +100,16 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255,255,255,0.05); /* brighter background */
+  background: rgba(255,255,255,0.08);
   border-radius: 8px;
   padding: 10px 14px;
   margin-bottom: 10px;
-  color: #ffffff; /* bright text */
+  color: #dce1e8;  /* readable text */
 }
 .patient-name { font-weight: 600; }
 .patient-wait { color: var(--accent); font-weight: 700; }
 
-/* Actions */
+/* Actions / Inputs */
 .actions-row {
   display: flex;
   gap: 10px;
@@ -117,9 +117,9 @@ body {
   flex-wrap: wrap;
 }
 .text-input {
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.1);
-  color: #1f1f1f;
+  background: #ffffff;        /* white background */
+  border: 1px solid rgba(0,0,0,0.15);
+  color: #1f1f1f;             /* dark text for visibility */
   padding: 10px 12px;
   border-radius: 8px;
   min-width: 200px;
@@ -132,20 +132,57 @@ body {
   box-shadow: 0 6px 18px rgba(25, 118, 210, 0.12);
   border-color: rgba(89,166,255,0.35);
 }
-.text-input.full { min-width: 360px; width: 100%; max-width: 520px; }
+.text-input.full {
+  min-width: 360px;
+  width: 100%;
+  max-width: 520px;
+}
 
-/* Notices */
-.notices-ul { list-style: none; padding: 0; margin: 0; }
+/* Share row */
+.share-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Notice Board */
+.notices-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 18px;
+  margin: 18px 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  width: 100%;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeIn 260ms ease both;
+  color: #dce1e8;
+}
+.notices-card .card-title {
+  color: var(--accent);
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+}
+
+.notices-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 .notice-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   padding: 10px 14px;
   margin-bottom: 10px;
-  color: #ffffff;
+  color: #dce1e8;
 }
+
+/* Notice form */
 .notice-form {
   margin-top: 12px;
   display: flex;
@@ -157,15 +194,17 @@ body {
   width: 100%;
   min-height: 80px;
   max-width: 100%;
-  background: rgba(255,255,255,0.05);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+  color: #dce1e8;
   border-radius: 8px;
   padding: 10px;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
-.text-area::placeholder { color: #b0b8c1; }
+.text-area::placeholder {
+  color: #b0b8c1;
+}
 
-/* Small layout bits */
+/* Small helpers */
 .muted { color: var(--muted); font-style: italic; }
 .bottom-row { display:flex; justify-content:center; margin-top: 16px; }
 
@@ -237,7 +276,7 @@ body {
 }
 .chat-bubble.bot {
   background: rgba(255,255,255,0.03);
-  color: #ffffff;
+  color: var(--text);
   align-self: flex-start;
 }
 .chat-input-area {
@@ -263,25 +302,4 @@ body {
   .card { margin: 14px 12px; }
   .text-input.full { max-width: 100%; }
 }
-
 .dashboard-section { display: flex; justify-content: center; }
-
-/* Notice board card */
-.notices-card {
-  background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 18px;
-  margin: 18px 0;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-  width: 100%;
-  max-width: 760px;
-  margin-left: auto;
-  margin-right: auto;
-  animation: fadeIn 260ms ease both;
-  color: #ffffff;
-}
-.notices-card .card-title {
-  color: var(--accent);
-  font-size: 1.05rem;
-  margin-bottom: 12px;
-}
