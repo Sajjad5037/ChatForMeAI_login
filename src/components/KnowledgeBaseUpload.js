@@ -6,7 +6,7 @@ const KnowledgeBaseUpload = () => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const server = "https://web-production-e5ae.up.railway.app";
+  const server = "generalchatbot-production.up.railway.app";
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -14,41 +14,50 @@ const KnowledgeBaseUpload = () => {
   };
 
   const handleUpload = async () => {
-    if (!file) {
-      setMessage("Please select a PDF file first.");
-      return;
+  if (!file) {
+    setMessage("Please select a PDF file first.");
+    return;
+  }
+
+  if (file.type !== "application/pdf") {
+    setMessage("Only PDF files are allowed.");
+    return;
+  }
+
+  if (!doctorData || !doctorData.id) {
+    setMessage("User ID is missing. Cannot upload.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("user_id", doctorData.id); // send the required user ID
+
+  try {
+    setUploading(true);
+    setMessage("");
+
+    const response = await fetch(`${server}/api/knowledge-base/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setMessage(`✅ Knowledge base uploaded successfully! ID: ${data.knowledge_base_id}`);
+      setFile(null);
+    } else {
+      const errorData = await response.json();
+      setMessage(`❌ Upload failed: ${errorData.detail || "Unknown error"}`);
     }
+  } catch (error) {
+    console.error(error);
+    setMessage("⚠️ Network error. Please try again later.");
+  } finally {
+    setUploading(false);
+  }
+};
 
-    if (file.type !== "application/pdf") {
-      setMessage("Only PDF files are allowed.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      setUploading(true);
-      setMessage("");
-
-      const response = await fetch(`${server}/upload_knowledge`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        setMessage("✅ Knowledge base uploaded successfully!");
-        setFile(null);
-      } else {
-        setMessage("❌ Upload failed. Please try again.");
-      }
-    } catch (error) {
-      setMessage("⚠️ Network error. Please try again later.");
-      console.error(error);
-    } finally {
-      setUploading(false);
-    }
-  };
 
   return (
     <div className="knowledge-upload-card">
