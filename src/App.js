@@ -5,33 +5,13 @@ import AddDoctor from "./components/AddDoctorPage";
 import EditDoctor from "./components/EditDoctorPage";
 import DashboardPage from "./components/DashboardPage.js"; 
 import AdminPanel from "./components/AdminPage";
-import ChatbotWithPdfTraining2 from "./components/PdfQuery2";
 import ViewDoctors from "./components/ViewDoctors";
 import DeleteDoctor from "./components/DeleteDoctor";
 import SignUpPage from "./components/SignUpPage";
-import OrderManager from "./components/OrderManager"
-import RealEstate from "./components/RealEstate"
-import School from "./components/School"
-import ChatbotTrainerUI from "./components/ChatbotTrainerUI"
-import ChatbotWithPdfTraining from "./components/PdfQuery"
-import EssayChecker from "./components/essay_checker_shahRukh"
-import SignupPage_ShahRukh from "./components/signup_ShahRukh"
-import EssayDashboard from "./components/EssayDashboard"
-import EssayReportsPage from "./components/EssayReportsPage"
-import EssayReportsPage_sociology from "./components/EssayReportsPage_sociology"
-import ChatbotTrainerUI_sociology from "./components/ChatbotTrainerUI_sociology"
-import CreateCampaign from "./components/CreateCampaign"
 import TestTailwind from "./components/TestTailwind"
 import './index.css';
 import EssayCheckerPDF from "./components/EssayCheckerPDF"
 import BusinessChatbot from "./components/BusinessChatbot"
-
-
-
-
-
-
-
 
 //hello there 
 
@@ -96,83 +76,6 @@ function BusinessChatbotWrapper({ setIsLoggedIn, doctorData, isLoggedIn }) {
 }
 
 
-function OrderManagerdWrapper({ setIsLoggedIn, doctorData, isLoggedIn}) {  
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search); 
-  const publicToken = queryParams.get("publicToken");
-  
-  // If publicToken exists, render DashboardPage in public mode (no login required)
-  if (publicToken) {
-    return <OrderManager setIsLoggedIn={setIsLoggedIn} doctorData={null} />;
-  }
-
-  // If no publicToken, require login for authenticated mode
-  if (!isLoggedIn) {
-    return <Navigate to="/" />;
-  }
-  
-  // Authenticated mode with doctorData
-  return (
-    <OrderManager 
-      setIsLoggedIn={setIsLoggedIn} 
-      doctorData={doctorData} 
-       
-    />
-  );
-  
-}
-
-function RealEstateWrapper({ setIsLoggedIn, doctorData, isLoggedIn}) {  
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search); 
-  const publicToken = queryParams.get("publicToken");
-  
-  // If publicToken exists, render DashboardPage in public mode (no login required)
-  if (publicToken) {
-    return <RealEstate setIsLoggedIn={setIsLoggedIn} doctorData={null} />;
-  }
-
-  // If no publicToken, require login for authenticated mode
-  if (!isLoggedIn) {
-    return <Navigate to="/" />;
-  }
-  
-  // Authenticated mode with doctorData
-  return (
-    <RealEstate 
-      setIsLoggedIn={setIsLoggedIn} 
-      doctorData={doctorData} 
-       
-    />
-  );
-  
-}
-
-function SchoolWrapper({ setIsLoggedIn, doctorData, isLoggedIn}) {  
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search); 
-  const publicToken = queryParams.get("publicToken");
-  
-  // If publicToken exists, render DashboardPage in public mode (no login required)
-  if (publicToken) {
-    return <School setIsLoggedIn={setIsLoggedIn} doctorData={null} />;
-  }
-
-  // If no publicToken, require login for authenticated mode
-  if (!isLoggedIn) {
-    return <Navigate to="/" />;
-  }
-  
-  // Authenticated mode with doctorData
-  return (
-    <School
-      setIsLoggedIn={setIsLoggedIn} 
-      doctorData={doctorData} 
-       
-    />
-  );
-  
-}
 
 
 function LoginPage({ setIsLoggedIn, setDoctorData ,setSessionToken }) {
@@ -186,62 +89,43 @@ function LoginPage({ setIsLoggedIn, setDoctorData ,setSessionToken }) {
   //const server = "http://localhost:3000"
   
   const handleLogin = async () => {
-    try {
-      // Clear previous state before logging in a new user
-      setIsLoggedIn(false);
-      setDoctorData(null);
-  
-      const response = await fetch(`${server}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // Required for sending cookies
-        body: JSON.stringify({ username, password }),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        setIsLoggedIn(true);
-        setDoctorData(data); // Store doctor data after login
-        setSessionToken(data.session_token || null);
-        // setPublicToken(data.public_token || null);
-  
-        setError(null);
-  
-        if (data?.id === 1) {
-          navigate("/AdminPanel");
-        } else if (data?.specialization === "restaurant") {
-          navigate("/OrderManager");
-        } else if (data?.specialization === "Sociology") {
-          navigate("/RealEstate"); // Add the correct navigation path
-        }else if (data?.specialization === "CSS_Academy1") {
-          navigate("/EssayChecker"); // Add the correct navigation path
-        }else if (data?.specialization === "PDF") {
-          navigate("/PDF"); // Add the correct navigation path
-        }else if (data?.specialization === "sociology") {
-          navigate("/Sociology"); // Add the correct navigation path          
-        }else if (data?.specialization === "SocialCampaign") {
-          navigate("/CreateCampaign"); // Add the correct navigation pathelse if (data?.specialization === "pdf_query") {
-          
-        }else if (data?.specialization === "bussiness_chatbot") {
-          navigate("/Chatbot"); // Add the correct navigation pathelse if (data?.specialization === "pdf_query") {
-          
-        }else if (data?.specialization === "PDF") {
-          navigate("/PDF"); // Add the correct navigation pathelse if (data?.specialization === "pdf_query") {
-          
-        }else if (data?.specialization === "School") {
-          navigate("/School"); // Add the correct navigation path
-        }  
-        else {
-          navigate("/dashboard"); // Redirect to the default dashboard
-        }
+  try {
+    // Clear previous state before logging in a new user
+    setIsLoggedIn(false);
+    setDoctorData(null);
+
+    const response = await fetch(`${server}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // Required for sending cookies
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setIsLoggedIn(true);
+      setDoctorData(data); // Store doctor data after login
+      setSessionToken(data.session_token || null);
+      // setPublicToken(data.public_token || null);
+
+      setError(null);
+
+      if (data?.id === 1) {
+        navigate("/AdminPanel");
+      } else if (data?.specialization === "business_chatbot") {
+        navigate("/Chatbot");
       } else {
-        setError(data.error || "Invalid credentials");
+        navigate("/dashboard"); // Redirect to the default dashboard
       }
-    } catch (err) {
-      setError("Failed to login");
+    } else {
+      setError(data.error || "Invalid credentials");
     }
-  };
+  } catch (err) {
+    setError("Failed to login");
+  }
+};
+
   
   const handleSignUp = () => {
     console.log("Sign Up button clicked");
@@ -251,34 +135,6 @@ function LoginPage({ setIsLoggedIn, setDoctorData ,setSessionToken }) {
   
   return (
     <div style={styles.container}>
-      
-      {/*
-<h1 style={{
-  backgroundColor: '#0078D4',
-  color: 'white',
-  padding: '10px',
-  textAlign: 'left', // Align text to the extreme left
-  borderRadius: '5px',
-  margin: '0', // Ensure no extra space around
-  width: '100%', // Make the background span full width
-}}>
-  Class Management System
-</h1>
-
-<p style={styles.description}>
-  <br /> {/* Line break at the start *\/}
-  Our <strong>AI-Powered Learning Companion</strong> is designed to elevate the quality of education by making exam preparation more interactive and personalized.
-  <br /><br />
-  <strong>For Students:</strong> The system allows them to upload their own PDFs, notes, and handwritten essays to train a custom language model tailored to their study materials. This enables them to engage in dynamic, back-and-forth conversations with the AI to clarify concepts, test understanding, and receive constructive feedback.
-  <br /><br />
-  Unlike static resources, this interactive experience mimics a knowledgeable tutor, helping students revise more effectively, build confidence, and focus on their weak areas.
-  <br /><br />
-  By transforming traditional revision into an intelligent, dialogue-based process, the application promotes deeper understanding, self-directed learning, and better academic outcomes.
-</p>
-*/}
-
-
-
       <div style={styles.loginBox}>
         <h2>Login</h2>
         
@@ -379,171 +235,13 @@ function App() {
             })()
           }
         />
-        <Route
-          path="/OrderManager"
-          element={
-            (() => {
-              const urlParams = new URLSearchParams(window.location.search);
-              const publicToken = urlParams.get("publicToken");
-              const SToken = urlParams.get("sessionToken")
-
-              console.log("Extracted Public Token:", publicToken);
-              console.log("Extracted Session Token:", SToken);
-
-              if (publicToken) {
-                if (!SToken) {
-                  console.log("sessionToken is missing, redirecting...");
-                  return <Navigate to="/" />;
-                }
-                return (
-                  <OrderManagerdWrapper
-                    setIsLoggedIn={setIsLoggedIn}
-                    doctorData={doctorData}
-                    isLoggedIn={isLoggedIn}
-                    sessionToken={SToken}
-                    publicToken={publicToken}
-                  />
-                );
-              }
-
-              if (isLoggedIn) {
-                if (!SessionToken) {
-                  console.log("SessionToken is missing, redirecting...");
-                  return <Navigate to="/" />;
-                }
-                return (
-                  <OrderManagerdWrapper
-                    setIsLoggedIn={setIsLoggedIn}
-                    doctorData={doctorData}
-                    isLoggedIn={isLoggedIn}
-                    sessionToken={SessionToken}
-                  />
-                );
-              }
-
-              return <Navigate to="/" />;
-            })()
-          }
-        />
-        <Route
-          path="/RealEstate"
-          element={
-            (() => {
-              const urlParams = new URLSearchParams(window.location.search);
-              const publicToken = urlParams.get("publicToken");
-              const SToken = urlParams.get("sessionToken")
-
-              console.log("Extracted Public Token:", publicToken);
-              console.log("Extracted Session Token:", SToken);
-
-              if (publicToken) {
-                if (!SToken) {
-                  console.log("sessionToken is missing, redirecting...");
-                  return <Navigate to="/" />;
-                }
-                return (
-                  <RealEstateWrapper
-                    setIsLoggedIn={setIsLoggedIn}
-                    doctorData={doctorData}
-                    isLoggedIn={isLoggedIn}
-                    sessionToken={SToken}
-                    publicToken={publicToken}
-                  />
-                );
-              }
-
-              if (isLoggedIn) {
-                if (!SessionToken) {
-                  console.log("SessionToken is missing, redirecting...");
-                  return <Navigate to="/" />;
-                }
-                return (
-                  <RealEstateWrapper
-                    setIsLoggedIn={setIsLoggedIn}
-                    doctorData={doctorData}
-                    isLoggedIn={isLoggedIn}
-                    sessionToken={SessionToken}
-                  />
-                );
-              }
-
-              return <Navigate to="/" />;
-            })()
-          }
-        />
-        <Route
-          path="/School"
-          element={
-            (() => {
-              const urlParams = new URLSearchParams(window.location.search);
-              const publicToken = urlParams.get("publicToken");
-              const SToken = urlParams.get("sessionToken")
-
-              console.log("Extracted Public Token:", publicToken);
-              console.log("Extracted Session Token:", SToken);
-
-              if (publicToken) {
-                if (!SToken) {
-                  console.log("sessionToken is missing, redirecting...");
-                  return <Navigate to="/" />;
-                }
-                return (
-                  <SchoolWrapper
-                    setIsLoggedIn={setIsLoggedIn}
-                    doctorData={doctorData}
-                    isLoggedIn={isLoggedIn}
-                    sessionToken={SToken}
-                    publicToken={publicToken}
-                  />
-                );
-              }
-
-              if (isLoggedIn) {
-                if (!SessionToken) {
-                  console.log("SessionToken is missing, redirecting...");
-                  return <Navigate to="/" />;
-                }
-                return (
-                  <SchoolWrapper
-                    setIsLoggedIn={setIsLoggedIn}
-                    doctorData={doctorData}
-                    isLoggedIn={isLoggedIn}
-                    sessionToken={SessionToken}
-                  />
-                );
-              }
-
-              return <Navigate to="/" />;
-            })()
-          }
-        />
+        
         <Route
           path="/AdminPanel"
           element={isLoggedIn ? <AdminPanel /> : <Navigate to="/" />}
         /> 
 
-        <Route
-          path="/OrderManager"
-          element={isLoggedIn ? <OrderManager /> : <Navigate to="/" />}
-        />
-        // App.js snippet
-        <Route
-          path="/EssayChecker/*"
-          element={isLoggedIn ? <EssayDashboard isLoggedIn={isLoggedIn} doctorData={doctorData} /> : <Navigate to="/" />}
-        >
-          <Route index element={<div>Welcome to the Essay Dashboard. Choose an option from sidebar.</div>} />
-          <Route path="evaluator" element={<ChatbotTrainerUI doctorData={doctorData} />} />
-          <Route path="reports" element={<EssayReportsPage doctorData={doctorData} />} />
-          <Route path="evaluator_pdf" element={<EssayCheckerPDF doctorData={doctorData} />} />
-        </Route>
-        <Route
-          path="/Sociology"
-          element={isLoggedIn ? <BusinessChatbot doctorData={doctorData} /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/CreateCampaign"
-          element={isLoggedIn ? <CreateCampaign doctorData={doctorData} /> : <Navigate to="/" />}
-        />
+        
         <Route
           path="/chatbot"
           element={
@@ -592,35 +290,10 @@ function App() {
         />
 
 
-        {/*
-        <Route
-          path="/EssayChecker"
-          element={
-            isLoggedIn ? <ChatbotTrainerUI doctorData={doctorData} /> : <Navigate to="/" />
-          }
-          
-        />
-        */}
+        
 
         
-        <Route
-          path="/EssayCheckerShahRukh"
-          element={
-            isLoggedIn ? <EssayChecker doctorData={doctorData} /> : <Navigate to="/" />
-          }
-        />
-         <Route
-          path="/PdfQuery"
-          element={
-            isLoggedIn ? <ChatbotWithPdfTraining doctorData={doctorData} /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="/PDF"
-          element={
-            isLoggedIn ? <ChatbotWithPdfTraining2 doctorData={doctorData} /> : <Navigate to="/" />
-          }
-        />
+        
         
 
         <Route path="/add-doctor" element={<AddDoctor />} />
