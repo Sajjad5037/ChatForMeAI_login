@@ -1,31 +1,54 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./PublicChatbot.css";
 
-export default function PublicChatbot({ doctorData }) {
+export default function PublicChatbot() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
+  const [doctorName, setDoctorName] = useState(""); // will fetch using session token
   const chatEndRef = useRef(null);
 
   const server = "https://generalchatbot-production.up.railway.app";
+  const backendUrl = "https://web-production-e5ae.up.railway.app";
 
-  // ---------------- Logs for debugging ----------------
+  // ---------------- Extract session token from URL ----------------
+  const queryParams = new URLSearchParams(window.location.search);
+  const sessionToken = queryParams.get("sessionToken");
+
   useEffect(() => {
     console.log("🚦 PublicChatbot mounted");
-    console.log("doctorData on mount:", doctorData);
-  }, []);
+    console.log("sessionToken:", sessionToken);
+
+    if (!sessionToken) {
+      console.warn("🚨 No session token found in URL");
+      return;
+    }
+
+    // Fetch doctor info from backend using session token
+    const fetchDoctorInfo = async () => {
+      try {
+        const res = await fetch(`${backendUrl}/get-doctor-name?session_token=${sessionToken}`);
+        const data = await res.json();
+        console.log("📦 Doctor info fetched:", data);
+        setDoctorName(data.name);
+      } catch (err) {
+        console.error("❌ Error fetching doctor info:", err);
+      }
+    };
+
+    fetchDoctorInfo();
+  }, [sessionToken]);
 
   // ---------------- Welcome message ----------------
   useEffect(() => {
-    if (doctorData?.name) {
-      console.log("👨‍⚕️ doctorData available:", doctorData);
+    if (doctorName) {
       const welcomeMsg = {
         sender: "bot",
-        text: `Welcome, Dr. ${doctorData.name}! How can I assist you today?`,
+        text: `Welcome, Dr. ${doctorName}! How can I assist you today?`,
       };
       setMessages([welcomeMsg]);
     }
-  }, [doctorData?.name]);
+  }, [doctorName]);
 
   // ---------------- Auto-scroll ----------------
   useEffect(() => {
@@ -34,8 +57,8 @@ export default function PublicChatbot({ doctorData }) {
 
   // ---------------- Send message ----------------
   const sendMessage = async () => {
-    if (!input.trim() || !doctorData?.id) {
-      console.warn("🚨 Cannot send message: doctorData.id missing");
+    if (!input.trim() || !sessionToken) {
+      console.warn("🚨 Cannot send message: missing input or session token");
       return;
     }
 
@@ -49,7 +72,7 @@ export default function PublicChatbot({ doctorData }) {
       const res = await fetch(`${server}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, user_id: doctorData.id }),
+        body: JSON.stringify({ message: msg, session_token: sessionToken }),
       });
 
       const data = await res.json();
@@ -68,7 +91,7 @@ export default function PublicChatbot({ doctorData }) {
   };
 
   // ---------------- Loading state ----------------
-  if (!doctorData) {
+  if (!sessionToken || !doctorName) {
     return (
       <div className="chat-container">
         <div className="chat-box">
