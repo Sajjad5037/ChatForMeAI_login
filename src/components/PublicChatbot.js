@@ -13,7 +13,7 @@ export default function PublicChatbot() {
   const [isWaiting, setIsWaiting] = useState(false);
   const chatEndRef = useRef(null);
 
-  const server = "https://web-production-e5ae.up.railway.app";
+  const server = "https://generalchatbot-production.up.railway.app";
 
   // ------------------ Initial welcome ------------------
   useEffect(() => {
