@@ -69,7 +69,7 @@ export default function PublicChatbot() {
 
     try {
       console.log("🌐 Sending message to backend:", msg);
-      const res = await fetch(`${server}/api/chat`, {
+      const res = await fetch(`${server}/api/chat-business`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg, session_token: sessionToken }),
