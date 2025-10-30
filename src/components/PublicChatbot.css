@@ -1,36 +1,39 @@
 /* PublicChatbot.css */
 
-/* ---------- Page Background ---------- */
-body, html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #d0e7ff; /* light blue surrounding the chatbot */
+/* ---------- Full-screen wrapper ---------- */
+.chat-wrapper {
+  position: fixed;      /* cover the full screen */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #d0e7ff; /* light blue background */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial, sans-serif;
+  justify-content: center; /* center horizontally */
+  align-items: center;     /* center vertically */
+  padding: 20px;           /* spacing for mobile screens */
+  box-sizing: border-box;
+  z-index: 9998;
 }
 
 /* ---------- Chat Container ---------- */
 .chat-container {
-  width: 800px;          /* wide on desktop */
-  max-width: 95%;        /* responsive for smaller screens */
-  height: 700px;
-  max-height: 90%;
-  background-color: #f9f9f9; /* chatbot white background */
+  width: 800px;          /* desktop width */
+  max-width: 100%;       /* responsive */
+  height: 100%;          /* fill available vertical space */
+  max-height: 90vh;      /* don’t exceed viewport */
+  background-color: #f9f9f9; /* chatbot background */
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
   z-index: 9999;
-  margin: auto; /* center in body flex */
+  overflow: hidden;
 }
 
 /* ---------- Header ---------- */
 .chat-header {
-  background-color: #4a90e2; /* medium blue */
+  background-color: #4a90e2;
   color: white;
   padding: 12px;
   font-weight: bold;
@@ -38,13 +41,15 @@ body, html {
   text-align: center;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
+  flex-shrink: 0;
 }
 
 /* ---------- Chat Box ---------- */
 .chat-box {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
+  overflow: hidden;
 }
 
 .chat-messages {
@@ -55,7 +60,6 @@ body, html {
   flex-direction: column;
   gap: 8px;
   background-color: #fff;
-  border-radius: 0 0 12px 12px;
 }
 
 /* ---------- Chat Bubbles ---------- */
@@ -67,12 +71,12 @@ body, html {
 }
 
 .chat-bubble.user {
-  background-color: #dcf8c6; /* light green */
+  background-color: #dcf8c6;
   align-self: flex-end;
 }
 
 .chat-bubble.bot {
-  background-color: #eeeeee; /* light gray */
+  background-color: #eeeeee;
   align-self: flex-start;
 }
 
@@ -87,6 +91,7 @@ body, html {
   padding: 12px;
   gap: 8px;
   border-top: 1px solid #ccc;
+  flex-shrink: 0;
 }
 
 .chat-input-area input[type="text"] {
