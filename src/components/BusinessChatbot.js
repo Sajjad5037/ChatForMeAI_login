@@ -68,8 +68,8 @@ export default function BusinessChatbot({ doctorData }) {
 
   // ----------------- Render -----------------
   if (isPublicMode) {
-    // ----------- PUBLIC VIEW: render full PublicChatbot -----------
-    return <PublicChatbot />;
+    // ----------- PUBLIC VIEW: render PublicChatbot with doctorData -----------
+    return <PublicChatbot doctorData={doctorData} />;
   }
 
   // ----------- ADMIN VIEW -----------
