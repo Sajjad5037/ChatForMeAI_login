@@ -38,11 +38,10 @@ function BusinessChatbotWrapper({ setIsLoggedIn, doctorData, isLoggedIn }) {
   console.log("sessionToken:", sessionToken);
 
   if (publicToken) {
-    console.log("Rendering BusinessChatbot in public mode, doctorData will be null");
     return (
       <BusinessChatbot
         setIsLoggedIn={setIsLoggedIn}
-        doctorData={null}
+        doctorData={doctorData} // use actual doctorData
         publicToken={publicToken}
         sessionToken={sessionToken}
       />
