@@ -118,17 +118,19 @@ body {
   flex-wrap: wrap;
 }
 .text-input {
-  background: var(--glass);
-  border: 1px solid rgba(255,255,255,0.03);
-  color: #ffffff; /* brighter, more visible text */
+  background: #ffffff;  /* white background */
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #1f1f1f;       /* dark text for contrast */
   padding: 10px 12px;
   border-radius: 8px;
   min-width: 200px;
   outline: none;
 }
+
 .text-input::placeholder {
-  color: #c0c5ce; /* slightly muted placeholder for contrast */
+  color: #888888;        /* muted placeholder */
 }
+
 .text-input:focus {
   box-shadow: 0 6px 18px rgba(25, 118, 210, 0.12);
   border-color: rgba(89,166,255,0.35);
@@ -156,16 +158,27 @@ body {
 }
 
 /* notice form */
-.notice-form { margin-top: 12px; display: flex; gap: 10px; flex-direction: column; align-items: flex-start; }
+.notice-form {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .text-area {
   width: 100%;
   min-height: 80px;
   max-width: 100%;
-  background: var(--glass);
-  color: var(--text);
+  background: #ffffff;         /* white background for clarity */
+  color: #1f1f1f;             /* dark text for visibility */
   border-radius: 8px;
   padding: 10px;
-  border: 1px solid rgba(255,255,255,0.03);
+  border: 1px solid rgba(0,0,0,0.15);  /* subtle border for definition */
+}
+
+.text-area::placeholder {
+  color: #888888;              /* muted placeholder */
 }
 
 /* small layout bits */
