@@ -120,11 +120,14 @@ body {
 .text-input {
   background: var(--glass);
   border: 1px solid rgba(255,255,255,0.03);
-  color: var(--text);
+  color: #ffffff; /* brighter, more visible text */
   padding: 10px 12px;
   border-radius: 8px;
   min-width: 200px;
   outline: none;
+}
+.text-input::placeholder {
+  color: #c0c5ce; /* slightly muted placeholder for contrast */
 }
 .text-input:focus {
   box-shadow: 0 6px 18px rgba(25, 118, 210, 0.12);
