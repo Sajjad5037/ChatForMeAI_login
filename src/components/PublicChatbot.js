@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import "./PublicChatbot.css";
 
-export default function PublicChatbot() {
+export default function PublicChatbot({ doctorData }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const publicToken = queryParams.get("publicToken");
@@ -31,39 +31,39 @@ export default function PublicChatbot() {
 
   // ------------------ Send message ------------------
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  e.preventDefault();
+  if (!input.trim()) return;
 
-    const userInput = input.trim();
-    setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
-    setInput("");
-    setIsWaiting(true);
+  const userInput = input.trim();
+  setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
+  setInput("");
+  setIsWaiting(true);
 
-    try {
-      const res = await fetch(`${server}/api/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: userInput,
-          publicToken,
-          sessionToken,
-        }),
-      });
-      const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: data.reply ?? "No response" },
-      ]);
-    } catch (err) {
-      console.error("Error fetching chatbot response:", err);
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: "Service unavailable" },
-      ]);
-    } finally {
-      setIsWaiting(false);
-    }
-  };
+  try {
+    const res = await fetch(`${server}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: userInput,
+        user_id: doctorData?.id,  // send user_id for backend
+      }),
+    });
+
+    const data = await res.json();
+    setMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: data.reply ?? "No response" },
+    ]);
+  } catch (err) {
+    console.error("Error fetching chatbot response:", err);
+    setMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: "Service unavailable" },
+    ]);
+  } finally {
+    setIsWaiting(false);
+  }
+};
 
   return (
     <div className="chatbot-fullscreen">
