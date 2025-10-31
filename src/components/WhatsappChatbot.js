@@ -86,11 +86,30 @@ export default function WhatsappChatbot({ doctorData }) {
 
     {/* --- Knowledge Base Upload --- */}
     {!isPublicMode && doctorData && (
-      <section className="card knowledge-card">
-        <h3 className="card-title">Upload Knowledge Base</h3>
-        <KnowledgeBaseUpload doctorData={doctorData} />
-      </section>
-    )}
+    <section className="card knowledge-card">
+      <h3 className="card-title">Upload Knowledge Base</h3>
+  
+      {/* Phone number input */}
+      <div className="form-group" style={{ marginBottom: "1rem" }}>
+        <label htmlFor="phoneNumber" className="form-label">
+          WhatsApp Phone Number
+        </label>
+        <input
+          type="text"
+          id="phoneNumber"
+          name="phoneNumber"
+          placeholder="Enter your phone number"
+          className="form-input"
+          value={phoneNumber}           // controlled state
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          style={{ width: "100%", padding: "0.5rem", borderRadius: "0.25rem" }}
+        />
+      </div>
+  
+      {/* Knowledge Base Upload Component */}
+      <KnowledgeBaseUpload doctorData={doctorData} />
+    </section>
+  )}
 
     
 
