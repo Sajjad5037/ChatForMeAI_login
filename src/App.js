@@ -10,6 +10,7 @@ import SignUpPage from "./components/SignUpPage";
 import TestTailwind from "./components/TestTailwind";
 import EssayCheckerPDF from "./components/EssayCheckerPDF";
 import BusinessChatbot from "./components/BusinessChatbot";
+import WhatsappChatbot from "./components/WhatsappChatbot";
 
 import "./App.css"; // New CSS file
 
@@ -64,6 +65,45 @@ function BusinessChatbotWrapper({ setIsLoggedIn, doctorData, isLoggedIn }) {
   );
 }
 
+function WhatsappChatbotWrapper({ setIsLoggedIn, doctorData, isLoggedIn }) {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const publicToken = queryParams.get("publicToken");
+  const sessionToken = queryParams.get("sessionToken");
+
+  console.log("🚦 WhatsappChatbotWrapper render");
+  console.log("doctorData:", doctorData);
+  console.log("isLoggedIn:", isLoggedIn);
+  console.log("publicToken:", publicToken);
+  console.log("sessionToken:", sessionToken);
+
+  if (publicToken) {
+    return (
+      <WhatsappChatbot
+        setIsLoggedIn={setIsLoggedIn}
+        doctorData={doctorData} // use actual doctorData
+        publicToken={publicToken}
+        sessionToken={sessionToken}
+      />
+    );
+  }
+
+  if (!isLoggedIn) {
+    console.log("User is not logged in, redirecting to /");
+    return <Navigate to="/" />;
+  }
+
+  console.log("Rendering WhatsappChatbotWrapper in private mode with doctorData");
+  return (
+    <WhatsappChatbot
+      setIsLoggedIn={setIsLoggedIn}
+      doctorData={doctorData}
+      publicToken={publicToken}
+      sessionToken={sessionToken}
+    />
+  );
+}
+
 // Login Page
 function LoginPage({ setIsLoggedIn, setDoctorData, setSessionToken }) {
   const [username, setUsername] = useState("");
@@ -106,7 +146,10 @@ function LoginPage({ setIsLoggedIn, setDoctorData, setSessionToken }) {
       } else if (data?.specialization === "bussiness_chatbot") {
         console.log("Navigating to Chatbot");
         navigate("/Chatbot");
-      } else {
+      }else if (data?.specialization === "whatsapp_chatbot") {
+        console.log("Navigating to Chatbot");
+        navigate("/Chatbot-whatsapp");
+      }else {
         console.log("Navigating to default dashboard");
         navigate("/dashboard");
       }
@@ -156,6 +199,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardWrapper setIsLoggedIn={setIsLoggedIn} doctorData={doctorData} isLoggedIn={isLoggedIn} />} />
         <Route path="/AdminPanel" element={isLoggedIn ? <AdminPanel /> : <Navigate to="/" />} />
         <Route path="/chatbot" element={<BusinessChatbotWrapper setIsLoggedIn={setIsLoggedIn} doctorData={doctorData} isLoggedIn={isLoggedIn} />} />
+        <Route path="/Chatbot-whatsapp" element={<WhatsappChatbotWrapper setIsLoggedIn={setIsLoggedIn} doctorData={doctorData} isLoggedIn={isLoggedIn} />} />
         <Route path="/add-doctor" element={<AddDoctor />} />
         <Route path="/edit-doctor" element={<EditDoctor />} />
         <Route path="/view-doctors" element={<ViewDoctors />} />
