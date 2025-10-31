@@ -99,6 +99,18 @@ const KnowledgeBaseUpload = ({ doctorData, phoneNumber }) => {
       >
         {uploading ? "Uploading..." : "Upload"}
       </button>
+      {/* Clickable text below the button */}
+      <div style={{ marginTop: "10px", textAlign: "center" }}>
+        <a
+          href="https://www.imagetotext.info/text-to-pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="convert-link"
+          style={{ color: "#007bff", cursor: "pointer", textDecoration: "underline" }}
+        >
+          Convert text to PDF
+        </a>
+      </div>
 
       {message && <p className="upload-message">{message}</p>}
     </div>
