@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./KnowledgeBaseUpload.css";
 
-const KnowledgeBaseUpload = ({ doctorData }) => {
+const KnowledgeBaseUpload = ({ doctorData, phoneNumber }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
