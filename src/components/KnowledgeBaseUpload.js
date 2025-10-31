@@ -15,37 +15,40 @@ const KnowledgeBaseUpload = ({ doctorData, phoneNumber }) => {
   };
 
   const handleUpload = async () => {
-  // Basic validations
+  // --- Phone number validation ---
   const phoneRegex = /^03\d{9}$/; // starts with 03, followed by 9 digits
   if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
     setMessage("Please enter a valid phone number in the format 03004112884.");
     return; // stop execution if phone number is invalid
   }
+
+  // --- File validations ---
   if (!file) {
     setMessage("Please select a PDF file first.");
     return;
   }
-
   if (file.type !== "application/pdf") {
     setMessage("Only PDF files are allowed.");
     return;
   }
 
+  // --- Doctor data validation ---
   if (!doctorData || !doctorData.id) {
     setMessage("User ID is missing. Cannot upload.");
     return;
   }
 
-  // Prepare FormData including the PDF and user ID
+  // --- Prepare FormData including file, user_id, and phone number ---
   const formData = new FormData();
   formData.append("file", file);
   formData.append("user_id", doctorData.id.toString()); // ensure it's a string
+  formData.append("phone_number", phoneNumber);         // add phone number
 
   try {
     setUploading(true);
     setMessage("");
 
-    const response = await fetch(`${server}/api/knowledge-base/upload`, {
+    const response = await fetch(`${server}/api/whatsapp-knowledge-base/upload`, {
       method: "POST",
       body: formData,
     });
