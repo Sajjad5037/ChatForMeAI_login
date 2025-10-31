@@ -16,6 +16,11 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
 
   const handleUpload = async () => {
   // Basic validations
+  const phoneRegex = /^03\d{9}$/; // starts with 03, followed by 9 digits
+  if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
+    setMessage("Please enter a valid phone number in the format 03004112884.");
+    return; // stop execution if phone number is invalid
+  }
   if (!file) {
     setMessage("Please select a PDF file first.");
     return;
