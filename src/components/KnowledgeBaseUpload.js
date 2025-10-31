@@ -47,7 +47,7 @@ const KnowledgeBaseUpload = ({ doctorData, phoneNumber }) => {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("user_id", doctorData.id.toString()); // ensure it's a string
-  formData.append("phone_number", phoneNumber);         // add phone number
+  formData.append("phone_number", normalizedPhone);         // add phone number
 
   try {
     setUploading(true);
