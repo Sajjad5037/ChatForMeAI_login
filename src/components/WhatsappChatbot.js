@@ -109,7 +109,10 @@ export default function WhatsappChatbot({ doctorData }) {
       </div>
   
       {/* Knowledge Base Upload Component */}
-      <KnowledgeBaseUpload doctorData={doctorData} />
+      <KnowledgeBaseUpload 
+        doctorData={doctorData} 
+        phoneNumber={phoneNumber}  // pass the phone number as prop
+      />
     </section>
   )}
 
