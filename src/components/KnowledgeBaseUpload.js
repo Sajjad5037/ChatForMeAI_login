@@ -38,6 +38,11 @@ const KnowledgeBaseUpload = ({ doctorData, phoneNumber }) => {
     return;
   }
 
+    // --- Convert to international format before sending ---
+  const normalizedPhone = "92" + phoneNumber.slice(1); // "03004112884" → "923004112884"
+  console.log("[DEBUG] Normalized phone number:", normalizedPhone);
+
+
   // --- Prepare FormData including file, user_id, and phone number ---
   const formData = new FormData();
   formData.append("file", file);
