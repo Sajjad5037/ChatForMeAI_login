@@ -14,6 +14,8 @@ export default function WhatsappChatbot({ doctorData }) {
   const publicTokenFromUrl = queryParams.get("publicToken");
   const sessionTokenFromUrl = queryParams.get("sessionToken");
 
+  const [phoneNumber, setPhoneNumber] = useState("");
+
    // --- Debug doctorData ---
   console.log("DEBUG: doctorData in BusinessChatbot:", doctorData);
   console.log("DEBUG: doctorData.id in BusinessChatbot:", doctorData?.id);
