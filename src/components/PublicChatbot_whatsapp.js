@@ -83,7 +83,7 @@ export default function PublicChatbot_whatsapp() {
     setIsWaiting(true);
 
     try {
-      const res = await fetch(`${serverUrl}/api/chat`, {
+      const res = await fetch(`${serverUrl}/api/chat-whatsapp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMsg, user_id: doctorId }),
