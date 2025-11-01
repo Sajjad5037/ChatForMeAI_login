@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./PublicChatbot.css";
 
-export default function PublicChatbot() {
+export default function PublicChatbot_whatsapp() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
