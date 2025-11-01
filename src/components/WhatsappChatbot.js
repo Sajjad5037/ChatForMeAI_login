@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import KnowledgeBaseUpload from "./KnowledgeBaseUpload";
-import PublicChatbot from "./PublicChatbot"; // <-- import public chatbot
+import PublicChatbot_whatsapp from "./PublicChatbot_whatsapp"; // <-- import public chatbot
 import "./WhatsappChatbot.css";
 import ApiUsage from "./ApiUsage";
 
@@ -75,8 +75,8 @@ export default function WhatsappChatbot({ doctorData }) {
 
   // ----------------- Render -----------------
   if (isPublicMode) {
-    // ----------- PUBLIC VIEW: render PublicChatbot with doctorData -----------
-    return <PublicChatbot doctorData={doctorData} />;
+    // ----------- PUBLIC VIEW: render PublicChatbot_whatsapp with doctorData -----------
+    return <PublicChatbot_whatsapp doctorData={doctorData} />;
   }
 
   // ----------- ADMIN VIEW -----------
