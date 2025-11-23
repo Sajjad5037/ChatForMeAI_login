@@ -15,12 +15,7 @@ const KnowledgeBaseUpload = ({ doctorData, phoneNumber }) => {
   };
 
   const handleUpload = async () => {
-  // --- Phone number validation ---
-  const phoneRegex = /^03\d{9}$/; // starts with 03, followed by 9 digits
-  if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
-    setMessage("Please enter a valid phone number in the format 03004112884.");
-    return; // stop execution if phone number is invalid
-  }
+  
 
   // --- File validations ---
   if (!file) {
@@ -38,10 +33,7 @@ const KnowledgeBaseUpload = ({ doctorData, phoneNumber }) => {
     return;
   }
 
-    // --- Convert to international format before sending ---
-  const normalizedPhone = "92" + phoneNumber.slice(1); // "03004112884" → "923004112884"
-  console.log("[DEBUG] Normalized phone number:", normalizedPhone);
-
+   
 
   // --- Prepare FormData including file, user_id, and phone number ---
   const formData = new FormData();
