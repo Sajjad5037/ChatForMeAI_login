@@ -174,7 +174,7 @@ function LoginPage({ setIsLoggedIn, setDoctorData, setSessionToken }) {
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" />
         <div className="buttonGroup">
           <button onClick={handleLogin} className="button">Login</button>
-          <button onClick={handleSignUp} className="button">Sign Up</button>
+          
         </div>
         {error && <p className="error">{error}</p>}
       </div>
