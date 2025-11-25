@@ -56,7 +56,11 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
     const msg = input.trim();
     setMessages((prev) => [...prev, { text: msg, sender: "user" }]);
     setInput("");
-
+    console.log("======================================");
+    console.log("[DEBUG] Sending message to chatbot");
+    console.log("Message text:", msg);
+    console.log("Current doctorId:", doctorId);
+    console.log("Input state:", input);
     try {
       const res = await fetch(`https://generalchatbot-production.up.railway.app/api/chat`, {
         method: "POST",
