@@ -138,7 +138,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
       if (!doctorData) return;
   
       try {
-        const response = await fetch(`${server}/save-doctor`, {
+        const response = await fetch(`https://generalchatbot-production.up.railway.app/save-doctor`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
