@@ -132,6 +132,40 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
     // run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // --- Send doctorData to backend to save in DB ---
+  useEffect(() => {
+    const saveDoctorData = async () => {
+      if (!doctorData) return;
+  
+      try {
+        const response = await fetch(`${server}/save-doctor`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: doctorData.id,
+            name: doctorData.name,
+            message: doctorData.message,
+            public_token: doctorData.public_token,
+            session_token: doctorData.session_token,
+            specialization: doctorData.specialization,
+          }),
+        });
+  
+        const result = await response.json();
+        if (result.success) {
+          console.log("Doctor data saved successfully.");
+        } else {
+          console.error("Failed to save doctor data:", result.error);
+        }
+      } catch (err) {
+        console.error("Network error saving doctor data:", err);
+      }
+    };
+  
+    saveDoctorData();
+  }, [doctorData]);
 
   // --- public token fetch (authenticated mode) ---
   useEffect(() => {
