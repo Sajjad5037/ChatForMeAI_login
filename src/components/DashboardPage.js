@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PatientList from "./PatientList"; // kept (if unused you can remove)
 import "./DashboardPage.css";
-import KnowledgeBaseUpload from "./KnowledgeBaseUpload";
+import KnowledgeBaseUpload_clinic from "./KnowledgeBaseUpload_clinic";
 import ApiUsage from "./ApiUsage";
+
 
 
 /**
@@ -480,7 +481,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
           <>
             <section className="card knowledge-card">
               <h3 className="card-title">Upload Knowledge Base</h3>
-              <KnowledgeBaseUpload doctorData={doctorData} />
+              <KnowledgeBaseUpload_clinic doctorData={doctorData} />
             </section>
         
             <section className="card api-usage-card">
