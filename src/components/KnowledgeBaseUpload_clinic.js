@@ -44,7 +44,7 @@ const KnowledgeBaseUpload_clinic = ({ doctorData, phoneNumber }) => {
     setUploading(true);
     setMessage("");
 
-    const response = await fetch(`${server}/api/whatsapp-knowledge-base/upload`, {
+    const response = await fetch(`${server}/api/knowledge-base/upload`, {
       method: "POST",
       body: formData,
     });
