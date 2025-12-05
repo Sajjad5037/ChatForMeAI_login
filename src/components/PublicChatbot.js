@@ -11,7 +11,7 @@ export default function PublicChatbot({ publicToken, server2 }) {
 
   const chatEndRef = useRef(null);
 
-  const backendUrl = "https://web-production-e5ae.up.railway.app"; // for /api/chat-whatsapp
+  const backendUrl = "https://generalchatbot-production.up.railway.app"; // for /api/chat-whatsapp
 
   // --------------------------------------------------------
   // STEP 1 — INIT: Check whether this chatbot requires password
