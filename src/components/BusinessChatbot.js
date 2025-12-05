@@ -7,7 +7,7 @@ import "./BusinessChatbot.css";
 
 export default function BusinessChatbot({ doctorData }) {
   const server = "https://web-production-e5ae.up.railway.app";       // existing backend
-  const server2 = "https://your-new-endpoint-domain.com";            // NEW endpoints will use this
+  const server2 = "https://generalchatbot-production.up.railway.app";            // NEW endpoints will use this
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
