@@ -21,7 +21,7 @@ export default function PublicChatbot({ publicToken, server2 }) {
       try {
         console.log("DEBUG: Calling chatbot init with publicToken:", publicToken);
 
-        const res = await fetch(`https://generalchatbot-production.up.railway.app/chatbot/init/${publicToken}`);
+        const res = await fetch(`https://web-production-e5ae.up.railway.app/chatbot/init/${publicToken}`);
         const data = await res.json();
 
         console.log("DEBUG: /chatbot/init response:", data);
@@ -51,7 +51,7 @@ export default function PublicChatbot({ publicToken, server2 }) {
     try {
       console.log("DEBUG: Validating password");
 
-      const res = await fetch(`https://generalchatbot-production.up.railway.app/chatbot/validate-password`, {
+      const res = await fetch(`https://web-production-e5ae.up.railway.app/chatbot/validate-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
