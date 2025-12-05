@@ -6,13 +6,15 @@ import ApiUsage from "./ApiUsage";
 import "./BusinessChatbot.css";
 
 export default function BusinessChatbot({ doctorData }) {
-  const server = "https://web-production-e5ae.up.railway.app";
+  const server = "https://web-production-e5ae.up.railway.app";       // existing backend
+  const server2 = "https://your-new-endpoint-domain.com";            // NEW endpoints will use this
+
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
   // ----------------- URL MODE DETECTION -----------------
   const publicTokenFromUrl = queryParams.get("publicToken");
-  const isPublicMode = !!publicTokenFromUrl;
+  const isPublicMode = Boolean(publicTokenFromUrl);
 
   // ----------------- ADMIN SESSION -----------------
   const sessionToken =
@@ -20,43 +22,42 @@ export default function BusinessChatbot({ doctorData }) {
     localStorage.getItem("sessionToken") ||
     null;
 
-  // ----------------- ADMIN STATE -----------------
+  // ----------------- STATE -----------------
   const [publicToken, setPublicToken] = useState(publicTokenFromUrl || null);
   const [shareLink, setShareLink] = useState("Fetching...");
   const [qrCode, setQrCode] = useState("");
 
-  // Password protection state
   const [requirePassword, setRequirePassword] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
 
   // ----------------- FETCH PUBLIC TOKEN FOR ADMIN -----------------
   useEffect(() => {
-    if (!isPublicMode && sessionToken) {
-      fetch(`${server}/dashboard/public-token?session_token=${sessionToken}`)
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.publicToken) {
-            setPublicToken(data.publicToken);
-            setRequirePassword(data.requirePassword || false);
-          }
-        })
-        .catch(console.error);
-    }
-  }, [isPublicMode, sessionToken]);
+    if (isPublicMode || !sessionToken) return;
+
+    fetch(`${server}/dashboard/public-token?session_token=${sessionToken}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.publicToken) {
+          setPublicToken(data.publicToken);
+          setRequirePassword(data.requirePassword || false);
+        }
+      })
+      .catch(console.error);
+  }, [isPublicMode, sessionToken, server]);
 
   // ----------------- BUILD SHARE LINK -----------------
   useEffect(() => {
-    if (publicToken) {
-      const url = `${window.location.origin}/chatbot?publicToken=${publicToken}`;
-      setShareLink(url);
-    }
+    if (!publicToken) return;
+
+    const link = `${window.location.origin}/chatbot?publicToken=${publicToken}`;
+    setShareLink(link);
   }, [publicToken]);
 
   // ----------------- FETCH QR CODE -----------------
   useEffect(() => {
-    const fetchQR = async () => {
-      if (!publicToken) return;
+    if (!publicToken) return;
 
+    const fetchQR = async () => {
       try {
         const res = await fetch(`${server}/generate-qr/${publicToken}`);
         if (!res.ok) throw new Error("QR fetch failed");
@@ -64,17 +65,17 @@ export default function BusinessChatbot({ doctorData }) {
         const blob = await res.blob();
         setQrCode(URL.createObjectURL(blob));
       } catch (err) {
-        console.error(err);
+        console.error("QR Error:", err);
       }
     };
 
     fetchQR();
-  }, [publicToken]);
+  }, [publicToken, server]);
 
-  // ----------------- SAVE PASSWORD SETTINGS -----------------
+  // ----------------- SAVE PASSWORD SETTINGS (NEW ENDPOINT → USE server2) -----------------
   const handleSavePasswordSettings = async () => {
     try {
-      const res = await fetch(`generalchatbot-production.up.railway.app/chatbot/settings`, {
+      const res = await fetch(`${server2}/chatbot/settings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -94,7 +95,9 @@ export default function BusinessChatbot({ doctorData }) {
   };
 
   // ----------------- PUBLIC VIEW -----------------
-  if (isPublicMode) return <PublicChatbot doctorData={doctorData} />;
+  if (isPublicMode) {
+    return <PublicChatbot publicToken={publicTokenFromUrl} server2={server2} />;
+  }
 
   // ----------------- ADMIN VIEW -----------------
   return (
@@ -145,7 +148,12 @@ export default function BusinessChatbot({ doctorData }) {
       <section className="card share-card">
         <h3 className="card-title">Shareable Link & QR</h3>
         <div className="share-row">
-          <input type="text" readOnly value={shareLink} className="text-input full" />
+          <input
+            type="text"
+            readOnly
+            value={shareLink}
+            className="text-input full"
+          />
           <button
             className="btn ghost"
             onClick={() => navigator.clipboard.writeText(shareLink)}
