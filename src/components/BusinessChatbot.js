@@ -1,135 +1,173 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import KnowledgeBaseUpload from "./KnowledgeBaseUpload";
-import PublicChatbot from "./PublicChatbot"; // <-- import public chatbot
-import "./BusinessChatbot.css";
+import PublicChatbot from "./PublicChatbot";
 import ApiUsage from "./ApiUsage";
+import "./BusinessChatbot.css";
 
 export default function BusinessChatbot({ doctorData }) {
   const server = "https://web-production-e5ae.up.railway.app";
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-  // --- Tokens ---
+  // ----------------- URL MODE DETECTION -----------------
   const publicTokenFromUrl = queryParams.get("publicToken");
-  const sessionTokenFromUrl = queryParams.get("sessionToken");
+  const isPublicMode = !!publicTokenFromUrl;
 
-   // --- Debug doctorData ---
-  console.log("DEBUG: doctorData in BusinessChatbot:", doctorData);
-  console.log("DEBUG: doctorData.id in BusinessChatbot:", doctorData?.id);
-
+  // ----------------- ADMIN SESSION -----------------
   const sessionToken =
     doctorData?.session_token ||
-    sessionTokenFromUrl ||
     localStorage.getItem("sessionToken") ||
     null;
 
-  const isPublicMode = !!publicTokenFromUrl;
-
-  // --- Admin state ---
+  // ----------------- ADMIN STATE -----------------
   const [publicToken, setPublicToken] = useState(publicTokenFromUrl || null);
-  const [shareableUrl, setShareableUrl] = useState("Fetching URL...");
-  const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const [shareLink, setShareLink] = useState("Fetching...");
+  const [qrCode, setQrCode] = useState("");
 
-  // ----------------- Admin: fetch public token if authenticated -----------------
+  // Password protection state
+  const [requirePassword, setRequirePassword] = useState(false);
+  const [passwordValue, setPasswordValue] = useState("");
+
+  // ----------------- FETCH PUBLIC TOKEN FOR ADMIN -----------------
   useEffect(() => {
     if (!isPublicMode && sessionToken) {
       fetch(`${server}/dashboard/public-token?session_token=${sessionToken}`)
         .then((r) => r.json())
         .then((data) => {
-          if (data.publicToken) setPublicToken(data.publicToken);
+          if (data.publicToken) {
+            setPublicToken(data.publicToken);
+            setRequirePassword(data.requirePassword || false);
+          }
         })
-        .catch((err) => console.error(err));
+        .catch(console.error);
     }
   }, [isPublicMode, sessionToken]);
 
-  // ----------------- Admin: build shareable URL -----------------
+  // ----------------- BUILD SHARE LINK -----------------
   useEffect(() => {
-    if (publicToken && sessionToken) {
-      const url = `${window.location.origin}/chatbot?publicToken=${publicToken}&sessionToken=${sessionToken}`;
-      setShareableUrl(url);
+    if (publicToken) {
+      const url = `${window.location.origin}/chatbot?publicToken=${publicToken}`;
+      setShareLink(url);
     }
-  }, [publicToken, sessionToken]);
+  }, [publicToken]);
 
-  // ----------------- Admin: fetch QR code -----------------
+  // ----------------- FETCH QR CODE -----------------
   useEffect(() => {
-    const fetchQRCode = async (url) => {
-      if (!url || url === "Fetching URL...") return;
+    const fetchQR = async () => {
+      if (!publicToken) return;
+
       try {
-        const qrUrl = new URL(url);
-        const pub = qrUrl.searchParams.get("publicToken");
-        const ses = qrUrl.searchParams.get("sessionToken");
-        const qrApiUrl = `${server}/generate-qr/${pub}/${ses}`;
-        const res = await fetch(qrApiUrl);
-        if (!res.ok) throw new Error("Failed to fetch QR code");
+        const res = await fetch(`${server}/generate-qr/${publicToken}`);
+        if (!res.ok) throw new Error("QR fetch failed");
+
         const blob = await res.blob();
-        setQrCodeUrl(URL.createObjectURL(blob));
+        setQrCode(URL.createObjectURL(blob));
       } catch (err) {
         console.error(err);
       }
     };
-    if (publicToken && sessionToken) fetchQRCode(shareableUrl);
-  }, [publicToken, sessionToken, shareableUrl]);
 
-  // ----------------- Render -----------------
-  if (isPublicMode) {
-    // ----------- PUBLIC VIEW: render PublicChatbot with doctorData -----------
-    return <PublicChatbot doctorData={doctorData} />;
-  }
+    fetchQR();
+  }, [publicToken]);
 
-  // ----------- ADMIN VIEW -----------
+  // ----------------- SAVE PASSWORD SETTINGS -----------------
+  const handleSavePasswordSettings = async () => {
+    try {
+      const res = await fetch(`${server}/chatbot/settings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_token: sessionToken,
+          public_token: publicToken,
+          require_password: requirePassword,
+          password: requirePassword ? passwordValue : null,
+        }),
+      });
+
+      const data = await res.json();
+      alert(data.message || "Settings updated!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update settings.");
+    }
+  };
+
+  // ----------------- PUBLIC VIEW -----------------
+  if (isPublicMode) return <PublicChatbot doctorData={doctorData} />;
+
+  // ----------------- ADMIN VIEW -----------------
   return (
-  <div className="dashboard-container">
-    <header className="dashboard-header">
-      <h1 className="dashboard-title">Business Chatbot Center</h1>
-    </header>
+    <div className="dashboard-container">
+      <header className="dashboard-header">
+        <h1 className="dashboard-title">Business Chatbot Center</h1>
+      </header>
 
-    {/* --- Knowledge Base Upload --- */}
-    {!isPublicMode && doctorData && (
-      <section className="card knowledge-card">
-        <h3 className="card-title">Upload Knowledge Base</h3>
-        <KnowledgeBaseUpload doctorData={doctorData} />
-      </section>
-    )}
+      {/* --- Knowledge Base Upload --- */}
+      {doctorData && (
+        <section className="card knowledge-card">
+          <h3 className="card-title">Upload Knowledge Base</h3>
+          <KnowledgeBaseUpload doctorData={doctorData} />
+        </section>
+      )}
 
-    
+      {/* --- Password Protection Settings --- */}
+      <section className="card password-card">
+        <h3 className="card-title">Access Settings</h3>
 
-    {/* --- Shareable Link & QR --- */}
-    <section className="card share-card">
-      <h3 className="card-title">Shareable Link & QR</h3>
-      <div className="share-row">
-        <input
-          type="text"
-          readOnly
-          value={shareableUrl}
-          className="text-input full"
-        />
-        <button
-          className="btn ghost"
-          onClick={() => navigator.clipboard.writeText(shareableUrl)}
-        >
-          Copy
-        </button>
-        {qrCodeUrl && (
-          <a
-            className="qr-anchor"
-            href={qrCodeUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Open QR
-          </a>
+        <div className="toggle-row">
+          <label>Require Password to Access Chatbot</label>
+          <input
+            type="checkbox"
+            checked={requirePassword}
+            onChange={(e) => setRequirePassword(e.target.checked)}
+          />
+        </div>
+
+        {requirePassword && (
+          <div className="password-row">
+            <input
+              type="text"
+              placeholder="Enter access password"
+              value={passwordValue}
+              onChange={(e) => setPasswordValue(e.target.value)}
+              className="text-input full"
+            />
+          </div>
         )}
-      </div>
-    </section>
-    {/* --- API Usage --- */}
-    {!isPublicMode && doctorData && (
-      <section className="card api-usage-card">
-        <h3 className="card-title">API Usage</h3>
-        <ApiUsage doctorData={doctorData} />
-      </section>
-    )}
-  </div>
-);
 
+        <button className="btn primary" onClick={handleSavePasswordSettings}>
+          Save Settings
+        </button>
+      </section>
+
+      {/* --- Shareable Link & QR --- */}
+      <section className="card share-card">
+        <h3 className="card-title">Shareable Link & QR</h3>
+        <div className="share-row">
+          <input type="text" readOnly value={shareLink} className="text-input full" />
+          <button
+            className="btn ghost"
+            onClick={() => navigator.clipboard.writeText(shareLink)}
+          >
+            Copy
+          </button>
+
+          {qrCode && (
+            <a className="qr-anchor" href={qrCode} target="_blank" rel="noreferrer">
+              Open QR
+            </a>
+          )}
+        </div>
+      </section>
+
+      {/* --- API Usage --- */}
+      {doctorData && (
+        <section className="card api-usage-card">
+          <h3 className="card-title">API Usage</h3>
+          <ApiUsage doctorData={doctorData} />
+        </section>
+      )}
+    </div>
+  );
 }
