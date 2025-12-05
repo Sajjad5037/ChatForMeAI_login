@@ -74,7 +74,7 @@ export default function BusinessChatbot({ doctorData }) {
   // ----------------- SAVE PASSWORD SETTINGS -----------------
   const handleSavePasswordSettings = async () => {
     try {
-      const res = await fetch(`${server}/chatbot/settings`, {
+      const res = await fetch(`generalchatbot-production.up.railway.app/chatbot/settings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
