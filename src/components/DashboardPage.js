@@ -63,7 +63,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
     console.log("Current doctorId:", doctorId);
     console.log("Input state:", input);
     try {
-      const res = await fetch(`https://generalchatbot-production.up.railway.app/api/chat`, {
+      const res = await fetch(`https://web-production-e5ae.up.railway.app/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg, user_id: doctorId }),
