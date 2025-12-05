@@ -1,113 +1,163 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./PublicChatbot.css";
 
-export default function PublicChatbot() {
+export default function PublicChatbot({ publicToken, server2 }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
-  const [doctorUsername, setDoctorUsername] = useState("");
-  const [doctorId, setDoctorId] = useState(null);
+  const [requiresPassword, setRequiresPassword] = useState(null);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [chatAccessToken, setChatAccessToken] = useState(null);
+
   const chatEndRef = useRef(null);
 
-  const backendUrl = "https://web-production-e5ae.up.railway.app";
-  const serverUrl = "https://generalchatbot-production.up.railway.app";
+  const backendUrl = "https://web-production-e5ae.up.railway.app"; // for /api/chat-whatsapp
 
-  // ---------------- Extract session token ----------------
-  const queryParams = new URLSearchParams(window.location.search);
-  const sessionToken = queryParams.get("sessionToken");
-
-  // ---------------- Fetch doctor username ----------------
+  // --------------------------------------------------------
+  // STEP 1 — INIT: Check whether this chatbot requires password
+  // --------------------------------------------------------
   useEffect(() => {
-    if (!sessionToken) return;
-
-    const fetchDoctorUsername = async () => {
+    const initChatbot = async () => {
       try {
-        const res = await fetch(
-          `${backendUrl}/get-doctor-username?session_token=${sessionToken}`
-        );
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        console.log("DEBUG: Calling chatbot init with publicToken:", publicToken);
+
+        const res = await fetch(`${server2}/chatbot/init/${publicToken}`);
         const data = await res.json();
-        setDoctorUsername(data.username);
+
+        console.log("DEBUG: /chatbot/init response:", data);
+
+        if (data.requiresPassword) {
+          setRequiresPassword(true);
+        } else {
+          setRequiresPassword(false);
+          setChatAccessToken("PUBLIC_ACCESS_GRANTED"); // no password needed
+          setMessages([
+            { sender: "bot", text: "Welcome! How can I assist you today?" },
+          ]);
+        }
       } catch (err) {
-        console.error("❌ Error fetching doctor username:", err);
+        console.error("❌ Error initializing chatbot:", err);
+        setRequiresPassword(false);
       }
     };
 
-    fetchDoctorUsername();
-  }, [sessionToken]);
+    initChatbot();
+  }, [publicToken, server2]);
 
-  // ---------------- Fetch doctor ID ----------------
-  useEffect(() => {
-    if (!doctorUsername) return;
+  // --------------------------------------------------------
+  // STEP 2 — HANDLE PASSWORD SUBMISSION
+  // --------------------------------------------------------
+  const submitPassword = async () => {
+    try {
+      console.log("DEBUG: Validating password");
 
-    const fetchDoctorId = async () => {
-      try {
-        const res = await fetch(
-          `${backendUrl}/get-doctor-id?username=${encodeURIComponent(doctorUsername)}`
-        );
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const data = await res.json();
-        setDoctorId(data.doctor_id);
-      } catch (err) {
-        console.error("❌ Error fetching doctor ID:", err);
+      const res = await fetch(`${server2}/chatbot/validate-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          public_token: publicToken,
+          password: passwordInput,
+        }),
+      });
+
+      const data = await res.json();
+      console.log("DEBUG: /validate-password response:", data);
+
+      if (!data.valid) {
+        alert("Incorrect password");
+        return;
       }
-    };
 
-    fetchDoctorId();
-  }, [doctorUsername]);
-
-  // ---------------- Add welcome message ----------------
-  useEffect(() => {
-    if (doctorUsername) {
+      setChatAccessToken(data.chatAccessToken);
       setMessages([
-        {
-          sender: "bot",
-          text: `Welcome, Dr. ${doctorUsername}! How can I assist you today?`,
-        },
+        { sender: "bot", text: "Access granted! How can I help you today?" },
       ]);
+      setRequiresPassword(false);
+    } catch (err) {
+      console.error("❌ Error validating password:", err);
+      alert("Password validation failed");
     }
-  }, [doctorUsername]);
+  };
 
-  // ---------------- Auto-scroll ----------------
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isWaiting]);
-
-  // ---------------- Send message ----------------
+  // --------------------------------------------------------
+  // STEP 3 — SEND MESSAGE TO EXISTING /api/chat-whatsapp BACKEND
+  // --------------------------------------------------------
   const sendMessage = async () => {
-    if (!input.trim() || !doctorId) return;
+    if (!input.trim() || !chatAccessToken) return;
 
-    const userMsg = input.trim();
-    setMessages((prev) => [...prev, { text: userMsg, sender: "user" }]);
+    const userMessage = input.trim();
+    setMessages((prev) => [...prev, { sender: "user", text: userMessage }]);
     setInput("");
     setIsWaiting(true);
 
     try {
-      const res = await fetch(`${serverUrl}/api/chat-whatsapp`, {
+      console.log("DEBUG: Sending message to /api/chat-whatsapp");
+
+      const res = await fetch(`${backendUrl}/api/chat-whatsapp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMsg, user_id: doctorId }),
+        body: JSON.stringify({
+          message: userMessage,
+          public_token: publicToken,
+          chat_access_token: chatAccessToken, // NEW
+        }),
       });
 
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
+      console.log("DEBUG: Chat response:", data);
 
       setMessages((prev) => [
         ...prev,
-        { text: data.reply ?? "No response", sender: "bot" },
+        { sender: "bot", text: data.reply ?? "No response received" },
       ]);
     } catch (err) {
       console.error("❌ Error sending message:", err);
       setMessages((prev) => [
         ...prev,
-        { text: "Service unavailable", sender: "bot" },
+        { sender: "bot", text: "Service unavailable" },
       ]);
     } finally {
       setIsWaiting(false);
     }
   };
 
-  // ---------------- Render ----------------
+  // --------------------------------------------------------
+  // SCROLL
+  // --------------------------------------------------------
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isWaiting]);
+
+  // --------------------------------------------------------
+  // RENDER PASSWORD SCREEN
+  // --------------------------------------------------------
+  if (requiresPassword) {
+    return (
+      <div className="chat-wrapper">
+        <div className="chat-container">
+          <div className="chat-box">
+            <div className="chat-header">Protected Chatbot</div>
+            <div className="password-section">
+              <p>This chatbot requires a password.</p>
+              <input
+                type="password"
+                placeholder="Enter password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+              />
+              <button className="btn primary" onClick={submitPassword}>
+                Enter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --------------------------------------------------------
+  // RENDER CHATBOT
+  // --------------------------------------------------------
   return (
     <div className="chat-wrapper">
       <div className="chat-container">
@@ -115,23 +165,16 @@ export default function PublicChatbot() {
           <div className="chat-header">AI Chatbot</div>
 
           <div className="chat-messages">
-            {/* Loading state or actual messages */}
-            {!sessionToken || !doctorUsername || !doctorId ? (
-              <div className="chat-bubble bot">Loading chatbot...</div>
-            ) : (
-              <>
-                {messages.map((msg, idx) => (
-                  <div key={idx} className={`chat-bubble ${msg.sender}`}>
-                    {msg.text}
-                  </div>
-                ))}
-                {isWaiting && (
-                  <div className="chat-bubble bot waiting">
-                    <span>Waiting for response...</span>
-                  </div>
-                )}
-              </>
+            {messages.map((msg, i) => (
+              <div key={i} className={`chat-bubble ${msg.sender}`}>
+                {msg.text}
+              </div>
+            ))}
+
+            {isWaiting && (
+              <div className="chat-bubble bot typing">Thinking...</div>
             )}
+
             <div ref={chatEndRef} />
           </div>
 
@@ -141,9 +184,7 @@ export default function PublicChatbot() {
               placeholder="Type a message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") sendMessage();
-              }}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
             <button className="btn primary" onClick={sendMessage}>
               Send
