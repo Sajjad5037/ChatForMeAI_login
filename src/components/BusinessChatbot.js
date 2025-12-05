@@ -75,7 +75,7 @@ export default function BusinessChatbot({ doctorData }) {
   // ----------------- SAVE PASSWORD SETTINGS (NEW ENDPOINT → USE server2) -----------------
   const handleSavePasswordSettings = async () => {
     try {
-      const res = await fetch(`${server2}/chatbot/settings`, {
+      const res = await fetch(`${server}/chatbot/settings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -96,7 +96,7 @@ export default function BusinessChatbot({ doctorData }) {
 
   // ----------------- PUBLIC VIEW -----------------
   if (isPublicMode) {
-    return <PublicChatbot publicToken={publicTokenFromUrl} server2={server2} />;
+    return <PublicChatbot publicToken={publicTokenFromUrl} server={server} />;
   }
 
   // ----------------- ADMIN VIEW -----------------
