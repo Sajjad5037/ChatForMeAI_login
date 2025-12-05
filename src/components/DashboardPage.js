@@ -90,7 +90,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
         console.error("Missing tokens in shareable URL.");
         return;
       }
-      const qrApiUrl = `${server}/generate-qr/${publicToken}/${sessionToken}`;
+      const qrApiUrl = `${server}//generate-qr-old/${publicToken}/${sessionToken}`;
       const response = await fetch(qrApiUrl);
       if (!response.ok) throw new Error("Failed to fetch QR code");
       const blob = await response.blob();
