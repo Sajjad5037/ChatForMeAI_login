@@ -76,7 +76,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
 
       if (!publicToken || !sessionToken) return;
 
-      const qrApiUrl = `${server}//generate-qr-old/${publicToken}/${sessionToken}`;
+      const qrApiUrl = `${server}/generate-qr-old/${publicToken}/${sessionToken}`;
       const response = await fetch(qrApiUrl);
 
       if (!response.ok) throw new Error("QR fetch failed");
