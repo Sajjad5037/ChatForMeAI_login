@@ -1,354 +1,285 @@
-/* DashboardPage.css - Subtle Dark Theme with polished readability */
+/* --------------------------------------------------------
+   CLEAN LIGHT THEME (Material-style)
+   Optimized for Desktop + Mobile
+--------------------------------------------------------- */
 
-/* --- Global --- */
 :root {
-  --bg: #0f1113;
-  --panel: #15171a;
-  --muted: #8f98a3;
-  --text: #dce1e8;
-  --accent: #59a6ff;
-  --accent-2: #3db3a6;
-  --card-shadow: rgba(0,0,0,0.6);
-  --glass: rgba(255,255,255,0.05);
+  --bg: #f5f7fa;
+  --card-bg: #ffffff;
+  --text: #222;
+  --muted: #6f7a87;
+  --accent: #1976d2;
+  --accent-light: #2196f3;
+  --border: rgba(0,0,0,0.08);
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
+
+/* Global -------------------------------------------------- */
 
 body {
+  margin: 0;
   background: var(--bg);
+  font-family: Inter, system-ui, -apple-system, Arial;
   color: var(--text);
-  font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Container */
+/* Main container ----------------------------------------- */
+
 .dashboard-container {
-  padding: 36px 20px;
-  min-height: 100vh;
-  max-width: 1100px;
-  margin: 0 auto;
+  max-width: 900px;
+  margin: auto;
+  padding: 16px;
 }
 
-/* Header */
+/* Header -------------------------------------------------- */
+
 .dashboard-header {
-  margin-bottom: 18px;
-  text-align: left;
-}
-.dashboard-title {
-  color: var(--accent);
-  font-size: 1.9rem;
-  margin: 0 0 4px 0;
-  letter-spacing: -0.2px;
-}
-.dashboard-sub {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.95rem;
+  margin-bottom: 10px;
 }
 
-/* Meta row */
+.dashboard-title {
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Meta Cards --------------------------------------------- */
+
 .meta-row {
   display: flex;
-  gap: 16px;
-  margin: 16px 0 24px;
   flex-wrap: wrap;
+  gap: 12px;
+  margin: 14px 0 22px;
 }
+
 .meta-card {
-  background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 12px 16px;
-  box-shadow: 0 8px 20px var(--card-shadow);
-  width: 220px;
-}
-.meta-title {
-  color: #a0a9b5;  /* readable but muted */
-  font-size: 0.85rem;
-}
-.meta-value {
-  font-size: 1.05rem;
-  margin-top: 6px;
-  color: #dce1e8;  /* soft off-white */
-  font-weight: 600;
-}
-
-/* Cards */
-.card {
-  background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.02));
-  border-radius: 12px;
-  padding: 18px;
-  margin: 18px 0;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-  width: 100%;
-  max-width: 760px;
-  margin-left: auto;
-  margin-right: auto;
-  animation: fadeIn 260ms ease both;
-}
-.card-title {
-  margin: 0 0 12px 0;
-  color: var(--accent);
-  font-size: 1.05rem;
-}
-
-/* Waiting list */
-.patients-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.patient-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255,255,255,0.08);
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 10px;
-  color: #dce1e8;  /* readable text */
-}
-.patient-name { font-weight: 600; }
-.patient-wait { color: var(--accent); font-weight: 700; }
-
-/* Actions / Inputs */
-.actions-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.text-input {
-  background: #ffffff;        /* white background */
-  border: 1px solid rgba(0,0,0,0.15);
-  color: #1f1f1f;             /* dark text for visibility */
-  padding: 10px 12px;
-  border-radius: 8px;
-  min-width: 200px;
-  outline: none;
-}
-.text-input::placeholder {
-  color: #888888;
-}
-.text-input:focus {
-  box-shadow: 0 6px 18px rgba(25, 118, 210, 0.12);
-  border-color: rgba(89,166,255,0.35);
-}
-.text-input.full {
-  min-width: 360px;
-  width: 100%;
-  max-width: 520px;
-}
-
-/* Share row */
-.share-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-/* Notice Board */
-.notices-card {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 18px;
-  margin: 18px 0;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-  width: 100%;
-  max-width: 760px;
-  margin-left: auto;
-  margin-right: auto;
-  animation: fadeIn 260ms ease both;
-  color: #dce1e8;
-}
-.notices-card .card-title {
-  color: var(--accent);
-  font-size: 1.05rem;
-  margin-bottom: 12px;
-}
-
-.notices-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.notice-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 10px;
-  color: #dce1e8;
-}
-
-/* Notice form */
-.notice-form {
-  margin-top: 12px;
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.text-area {
-  width: 100%;
-  min-height: 80px;
-  max-width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  color: #dce1e8;
-  border-radius: 8px;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-.text-area::placeholder {
-  color: #b0b8c1;
-}
-
-/* Small helpers */
-.muted { color: var(--muted); font-style: italic; }
-.bottom-row { display:flex; justify-content:center; margin-top: 16px; }
-
-/* Buttons */
-.btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  font-weight: 600;
-  transition: transform .12s ease, box-shadow .12s ease;
-}
-.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.45); }
-.btn.primary { background: linear-gradient(180deg,var(--accent), #2f8fe6); color: white; }
-.btn.success { background: linear-gradient(180deg,#3dbd7a,#2f9f64); color: white; }
-.btn.warn { background: linear-gradient(180deg,#f0625d,#e53935); color: white; }
-.btn.ghost { background: transparent; color: var(--muted); border: 1px dashed rgba(255,255,255,0.03); }
-.btn.neutral { background: rgba(255,255,255,0.03); color: var(--text); }
-.btn.small { padding: 6px 8px; border-radius: 6px; font-size: 0.9rem; }
-.btn.danger { background: #b71c1c; color: white; }
-
-/* Chat UI */
-.chat-toggle {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  padding: 12px 18px;
-  border-radius: 999px;
-  background: linear-gradient(180deg,var(--accent), #2f8fe6);
-  color: white;
-  border: none;
-  font-weight: 700;
-  box-shadow: 0 8px 28px rgba(41,128,185,0.14);
-  cursor: pointer;
-  z-index: 1200;
-}
-.chat-window {
-  position: fixed;
-  bottom: 80px;
-  left: 20px;
-  width: 320px;
-  height: 420px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-radius: 12px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.7);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 1200;
-}
-.chat-messages {
-  padding: 12px;
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.chat-bubble {
-  max-width: 82%;
-  padding: 8px 12px;
-  border-radius: 12px;
-  line-height: 1.3;
-}
-.chat-bubble.user {
-  background: linear-gradient(180deg,var(--accent), #2f8fe6);
-  color: white;
-  align-self: flex-end;
-}
-.chat-bubble.bot {
-  background: rgba(255,255,255,0.03);
-  color: var(--text);
-  align-self: flex-start;
-}
-.chat-input-area {
-  display: flex;
-  gap: 8px;
-  padding: 10px;
-  border-top: 1px solid rgba(255,255,255,0.02);
-}
-
-/* Small helpers */
-.qr-anchor { color: var(--accent); text-decoration: underline; }
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive */
-@media (max-width: 760px) {
-  .meta-row { justify-content: center; }
-  .meta-card { width: 48%; }
-  .card { margin: 14px 12px; }
-  .text-input.full { max-width: 100%; }
-}
-.dashboard-section { display: flex; justify-content: center; }
-
-
-.mobile-container {
-  max-width: 500px;
-  margin: auto;
-  padding: 12px;
-}
-
-.card, .compact-card {
-  padding: 12px;
-  margin-bottom: 12px;
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  padding: 12px 16px;
+  box-shadow: var(--shadow);
+  flex: 1;
+  min-width: 170px;
 }
 
-.list-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
+.meta-title {
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
-.collapsible {
-  margin-bottom: 12px;
+.meta-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Collapsible Sections ----------------------------------- */
+
+.collapse-section {
+  margin-bottom: 14px;
 }
 
 .collapse-btn {
   width: 100%;
-  padding: 10px;
-  background: #f6f6f6;
-  border: none;
-  border-radius: 8px;
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-weight: 600;
-  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.collapse-btn span {
+  font-size: 1.02rem;
 }
 
 .collapse-content {
-  margin-top: 8px;
-  padding: 10px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  background: var(--card-bg);
+  margin-top: 6px;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
 }
 
-.qr-img {
-  width: 180px;
+/* Waiting List -------------------------------------------- */
+
+.patient-row {
+  background: var(--card-bg);
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.patient-wait {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Inputs --------------------------------------------------- */
+
+.text-input,
+.text-area {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.text-input::placeholder {
+  color: #999;
+}
+
+.text-area {
+  min-height: 70px;
+  resize: vertical;
+}
+
+/* Buttons -------------------------------------------------- */
+
+.btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 6px;
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: white;
+}
+
+.btn.success {
+  background: #2e7d32;
+  color: white;
+}
+
+.btn.warn {
+  background: #c62828;
+  color: white;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.btn.small {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+/* Notice Board -------------------------------------------- */
+
+.notice-row {
+  background: var(--card-bg);
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.notice-form {
   margin-top: 10px;
 }
 
+/* Share & QR ---------------------------------------------- */
+
+.qr-anchor {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.qr-img {
+  width: 160px;
+  margin-top: 10px;
+}
+
+/* Chat UI -------------------------------------------------- */
+
+.chat-toggle {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.chat-window {
+  position: fixed;
+  bottom: 80px;
+  left: 20px;
+  width: 300px;
+  height: 400px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 8px 12px;
+  background: #e3f2fd;
+  border-radius: 10px;
+}
+
+.chat-bubble.user {
+  background: var(--accent);
+  color: white;
+  align-self: flex-end;
+}
+
+.chat-input-area {
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+
+/* Mobile Optimizations ------------------------------------ */
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .collapse-btn {
+    padding: 10px;
+  }
+
+  .meta-row {
+    flex-direction: column;
+  }
+}
