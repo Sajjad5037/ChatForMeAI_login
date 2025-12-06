@@ -199,25 +199,29 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
       </header>
 
       {/* ---------------- COLLAPSIBLE SHARE LINK SECTION ---------------- */}
-      <div className="collapsible">
-        <button className="collapse-btn" onClick={() => setShowQR(!showQR)}>
-          Share Link & QR {showQR ? "▲" : "▼"}
-        </button>
+      {!isPublicMode && (
+        <div className="collapsible">
+          <button className="collapse-btn" onClick={() => setShowQR(!showQR)}>
+            Share Link & QR {showQR ? "▲" : "▼"}
+          </button>
+      
+          {showQR && (
+            <div className="collapse-content">
+              <input className="text-input full" readOnly value={shareableUrl} />
+      
+              <button
+                className="btn ghost"
+                onClick={() => navigator.clipboard.writeText(shareableUrl)}
+              >
+                Copy
+              </button>
+      
+              {qrCodeUrl && <img src={qrCodeUrl} alt="QR" className="qr-img" />}
+            </div>
+          )}
+        </div>
+      )}
 
-        {showQR && (
-          <div className="collapse-content">
-            <input className="text-input full" readOnly value={shareableUrl} />
-            <button
-              className="btn ghost"
-              onClick={() => navigator.clipboard.writeText(shareableUrl)}
-            >
-              Copy
-            </button>
-
-            {qrCodeUrl && <img src={qrCodeUrl} alt="QR" className="qr-img" />}
-          </div>
-        )}
-      </div>
 
       {/* ---------------- WAITING LIST ---------------- */}
       <div className="card compact-card">
