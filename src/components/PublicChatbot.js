@@ -91,7 +91,7 @@ export default function PublicChatbot({ publicToken, server2 }) {
     setIsWaiting(true);
 
     try {
-      console.log("DEBUG: Sending message to /api/chat-whatsapp");
+      console.log("DEBUG: Sending message to /api/rag-chat");
 
       const res = await fetch(`${backendUrl}/api/chat-whatsapp`, {
         method: "POST",
