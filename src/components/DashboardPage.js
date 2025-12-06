@@ -82,7 +82,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
 
     const genQR = async () => {
       try {
-        const res = await fetch(`${server}//generate-qr-old/${publicToken}/${sessionToken}`);
+        const res = await fetch(`${server}/generate-qr-old/${publicToken}/${sessionToken}`);
         const blob = await res.blob();
         setQrCodeUrl(URL.createObjectURL(blob));
       } catch {}
