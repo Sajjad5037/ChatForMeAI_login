@@ -1,188 +1,333 @@
-/* ========= FULL-WIDTH DASHBOARD UI (DESKTOP + MOBILE) ========= */
+/* =========================================================
+   DASHBOARD PAGE – CLEAN STRIPE / NOTION STYLE
+   Replace the entire DashboardPage.css with this
+   ========================================================= */
 
-/* Main container now spans entire screen */
-.mobile-container {
-  width: 100%;
-  max-width: none !important;     /* FULL WIDTH */
-  padding: 16px 18px;
+/* ---------- Global Layout ---------- */
+
+body {
   margin: 0;
-  font-family: system-ui, Inter, sans-serif;
-  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", Roboto, sans-serif;
+  background: #f5f7fb; /* soft dashboard grey */
+  color: #111827;
 }
 
-/* ---------------------------------------- */
-/* CARDS (expand full width)                */
-/* ---------------------------------------- */
+/* Optional outer shell if you ever wrap it */
+.dashboard-shell {
+  display: flex;
+  justify-content: center;
+}
+
+/* Main container used by your component */
+.dashboard-container,
+.mobile-container {
+  width: 100%;
+  max-width: 1100px;   /* content column */
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+/* ---------- Header / Title (if used) ---------- */
+
+.dashboard-header {
+  margin-bottom: 16px;
+}
+
+.dashboard-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+/* ---------- Meta row above cards (if used) ---------- */
+
+.meta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.meta-card {
+  flex: 1 1 180px;
+  min-width: 180px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.meta-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.meta-value {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ---------- Generic Card Wrapper ---------- */
+
 .compact-card {
   background: #ffffff;
   border-radius: 12px;
-  padding: 16px;
+  padding: 14px 16px;
   margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
   box-shadow:
-    0 1px 2px rgba(0,0,0,0.04),
-    0 3px 6px rgba(0,0,0,0.07);
-  width: 100%;
-  box-sizing: border-box;
+    0 1px 2px rgba(15, 23, 42, 0.03),
+    0 0 0 1px rgba(15, 23, 42, 0.01);
 }
 
-/* ---------------------------------------- */
-/* COLLAPSIBLE BUTTON SECTIONS              */
-/* ---------------------------------------- */
+/* Used by your top "Waiting List" card if it still uses .card */
+.card,
+.waiting-card,
+.notices-card,
+.api-usage-card,
+.knowledge-card,
+.actions-card,
+.share-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.03),
+    0 0 0 1px rgba(15, 23, 42, 0.01);
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 10px;
+}
+
+/* ---------- Collapsible Sections ---------- */
+
 .collapse-btn {
   width: 100%;
-  padding: 16px;
-  background: #f5f5f5;
-  border-radius: 12px;
-  border: none;
+  padding: 12px 14px;
+  background: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   text-align: left;
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 8px;
   cursor: pointer;
-  transition: background 0.15s;
+  color: #111827;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.08s ease;
+}
+
+.collapse-btn span {
+  font-size: 0.9rem;
 }
 
 .collapse-btn:hover {
-  background: #ebebeb;
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
 }
 
 .collapse-content {
   width: 100%;
-  padding: 16px;
+  padding: 12px 14px;
+  margin-top: 8px;
   background: #ffffff;
-  border-radius: 12px;
-  margin-top: 10px;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,0.05),
-    0 2px 8px rgba(0,0,0,0.08);
-  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
-/* ---------------------------------------- */
-/* INPUTS                                    */
-/* ---------------------------------------- */
+/* ---------- Inputs ---------- */
+
 .text-input {
   width: 100%;
-  padding: 12px;
+  padding: 10px 12px;
   border-radius: 10px;
-  border: 1px solid #dcdcdc;
-  font-size: 1rem;
-  background: white;
-  color: #333;
-  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #111827;
+}
+
+.text-input::placeholder {
+  color: #9ca3af;
 }
 
 .text-input:focus {
-  border-color: #2196f3;
-  box-shadow: 0 0 0 3px rgba(33,150,243,0.15);
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb33;
+}
+
+.text-input.full {
+  width: 100%;
 }
 
 .text-area {
   width: 100%;
-  padding: 12px;
+  padding: 10px 12px;
+  min-height: 80px;
   border-radius: 10px;
-  border: 1px solid #ddd;
-  min-height: 90px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
   resize: vertical;
-  box-sizing: border-box;
 }
 
-/* ---------------------------------------- */
-/* BUTTONS                                   */
-/* ---------------------------------------- */
+/* ---------- Buttons ---------- */
+
 .btn {
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: 9px 14px;
+  border-radius: 999px;
   border: none;
   font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition:
+    background 0.15s ease,
+    transform 0.08s ease,
+    box-shadow 0.12s ease,
+    opacity 0.12s ease;
 }
 
 .btn:hover {
-  opacity: 0.9;
+  opacity: 0.92;
   transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
 }
 
 .btn.primary {
-  background: #2196f3;
-  color: white;
+  background: #2563eb;
+  color: #ffffff;
 }
 
 .btn.success {
-  background: #4caf50;
-  color: white;
+  background: #16a34a;
+  color: #ffffff;
 }
 
 .btn.warn {
-  background: #f44336;
-  color: white;
+  background: #dc2626;
+  color: #ffffff;
 }
 
 .btn.ghost {
-  background: #f1f1f1;
-  color: #333;
+  background: #f3f4f6;
+  color: #111827;
 }
 
 .btn.neutral {
-  background: #ddd;
+  background: #e5e7eb;
+  color: #111827;
   width: 100%;
 }
 
 .btn.small {
-  padding: 6px 8px;
-  font-size: 0.86rem;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border-radius: 999px;
 }
 
 .btn.danger {
-  background: #e53935 !important;
-  color: white;
+  background: #dc2626 !important;
+  color: #ffffff;
 }
 
-/* ---------------------------------------- */
-/* LISTS                                     */
-/* ---------------------------------------- */
-.patient-row,
+/* ---------- Waiting List / Patients ---------- */
+
+.patients-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.patient-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 4px;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.patient-name {
+  font-weight: 500;
+}
+
+.patient-wait {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* ---------- Notices ---------- */
+
+.notices-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .notice-row {
   display: flex;
   justify-content: space-between;
-  padding: 10px 4px;
-  border-bottom: 1px solid #efefef;
-  font-size: 1rem;
+  align-items: center;
+  padding: 6px 4px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f3f4f6;
 }
 
-/* ---------------------------------------- */
-/* QR IMAGE                                  */
-/* ---------------------------------------- */
+/* ---------- QR Image ---------- */
+
 .qr-img {
-  width: 220px;
+  width: 200px;
   margin-top: 12px;
   display: block;
   border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
-/* ---------------------------------------- */
-/* CHAT UI                                   */
-/* ---------------------------------------- */
+/* ---------- Bottom Row (Logout) ---------- */
+
+.bottom-row {
+  margin-top: 20px;
+}
+
+/* ---------- Chat UI (public mode) ---------- */
+
 .chat-toggle {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  background: #2196f3;
+  background: #2563eb;
   color: white;
-  padding: 14px 18px;
-  border-radius: 100px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  font-weight: 600;
   border: none;
   cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
   z-index: 2000;
 }
 
 .chat-window {
   position: fixed;
-  bottom: 85px;
+  bottom: 82px;
   left: 20px;
   width: 320px;
   height: 420px;
@@ -190,44 +335,66 @@
   border-radius: 14px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
   overflow: hidden;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
   z-index: 2000;
 }
 
 .chat-messages {
   flex: 1;
-  padding: 12px;
+  padding: 10px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .chat-bubble {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 12px;
   max-width: 75%;
-  font-size: 0.92rem;
   line-height: 1.35;
+  font-size: 0.88rem;
 }
 
 .chat-bubble.user {
   align-self: flex-end;
-  background: #2196f3;
-  color: white;
+  background: #2563eb;
+  color: #ffffff;
 }
 
 .chat-bubble.bot {
   align-self: flex-start;
-  background: #ececec;
-  color: #333;
+  background: #f3f4f6;
+  color: #111827;
 }
 
 .chat-input-area {
   display: flex;
-  padding: 12px;
-  gap: 8px;
-  border-top: 1px solid #ddd;
-  background: #fafafa;
+  padding: 10px;
+  gap: 6px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+/* ---------- Utility ---------- */
+
+.muted {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* ---------- Responsive tweaks ---------- */
+
+@media (max-width: 640px) {
+  .dashboard-container,
+  .mobile-container {
+    padding: 16px 10px 28px;
+  }
+
+  .chat-window {
+    left: 10px;
+    right: 10px;
+    width: auto;
+  }
 }
