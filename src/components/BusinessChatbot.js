@@ -69,7 +69,10 @@ export default function BusinessChatbot({ doctorData }) {
 
   // ---------------- FETCH EXISTING DOCUMENTS FOR DOCTOR ----------------
   useEffect(() => {
-    if (!doctorData) return;
+     if (!doctorData?.id) {
+      console.log("Doctor data not ready yet, skipping docs fetch");
+      return;
+    }
 
     fetch(`${server}/api/whatsapp-knowledge-base/list?user_id=${doctorData.id}`)
       .then((res) => res.json())
