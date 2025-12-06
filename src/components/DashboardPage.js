@@ -1,19 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./DashboardPage.css";
 import KnowledgeBaseUpload_clinic from "./KnowledgeBaseUpload_clinic";
 import ApiUsage from "./ApiUsage";
+import "./DashboardPage.css";
 
 function DashboardPage({ setIsLoggedIn, doctorData }) {
   const navigate = useNavigate();
   const location = useLocation();
   const server = "https://web-production-e5ae.up.railway.app";
   const sessionToken = doctorData?.session_token;
-  const queryParams = new URLSearchParams(location.search);
-  const publicTokenFromUrl = queryParams.get("publicToken");
+  const publicTokenFromUrl = new URLSearchParams(location.search).get("publicToken");
   const isPublicMode = !!publicTokenFromUrl;
 
-  // ---------------- STATE ----------------
   const [doctorId, setDoctorId] = useState("");
   const [patients, setPatients] = useState([]);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
@@ -25,49 +23,126 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
   const [publicToken, setPublicToken] = useState(null);
   const [notices, setNotices] = useState([]);
   const [newNotice, setNewNotice] = useState("");
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { text: "Hello! How can I help you today?", sender: "bot" },
+  ]);
+  const [input, setInput] = useState("");
 
   const wsRef = useRef(null);
 
-  // Collapsible UI states
-  const [showQR, setShowQR] = useState(false); // default collapsed
+  // Collapsible UI state
+  const [showQR, setShowQR] = useState(false);
   const [showActions, setShowActions] = useState(false);
   const [showNotices, setShowNotices] = useState(false);
-  const [showKnowledge, setShowKnowledge] = useState(false);
-  const [showAPI, setShowAPI] = useState(false);
+  const [showKB, setShowKB] = useState(false);
+  const [showApiUsage, setShowApiUsage] = useState(false);
 
-  const formatTime = (sec) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
     return `${m}:${String(s).padStart(2, "0")}`;
   };
 
-  // ---------------- DOCTOR DATA ----------------
+  const toggleChat = () => setIsChatOpen((v) => !v);
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const msg = input.trim();
+    setMessages((prev) => [...prev, { text: msg, sender: "user" }]);
+    setInput("");
+
+    try {
+      const res = await fetch(`${server}/api/chat-new`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg, user_id: doctorId }),
+      });
+
+      const data = await res.json();
+      setMessages((prev) => [...prev, { text: data.reply ?? "No response", sender: "bot" }]);
+    } catch (err) {
+      console.error("Chat error:", err);
+      setMessages((prev) => [...prev, { text: "Service unavailable", sender: "bot" }]);
+    }
+  };
+
+  const fetchQRCode = async (shareableUrl) => {
+    try {
+      const url = new URL(shareableUrl);
+      const publicToken = url.searchParams.get("publicToken");
+      const sessionToken = url.searchParams.get("sessionToken");
+
+      if (!publicToken || !sessionToken) return;
+
+      const qrApiUrl = `${server}//generate-qr-old/${publicToken}/${sessionToken}`;
+      const response = await fetch(qrApiUrl);
+
+      if (!response.ok) throw new Error("QR fetch failed");
+
+      const blob = await response.blob();
+      setQrCodeUrl(URL.createObjectURL(blob));
+    } catch (e) {
+      console.error("QR Error:", e);
+    }
+  };
+
+  // Fetch doctor ID + name
   useEffect(() => {
     const fetchDoctorData = async () => {
       const session_Token = new URLSearchParams(window.location.search).get("sessionToken");
       if (!session_Token) return;
 
-      const idResp = await fetch(`${server}/get-doctor-id/${session_Token}`);
-      const idData = await idResp.json();
-      if (idData.doctor_id) {
-        setDoctorId(idData.doctor_id);
+      try {
+        const idResp = await fetch(`${server}/get-doctor-id/${session_Token}`);
+        const idData = await idResp.json();
 
-        const nameResp = await fetch(`${server}/get-doctor-name/${idData.doctor_id}`);
-        const nameData = await nameResp.json();
-        if (nameData.doctor_name) setDoctorName(nameData.doctor_name);
+        if (idData.doctor_id) {
+          setDoctorId(idData.doctor_id);
+
+          const nameResp = await fetch(`${server}/get-doctor-name/${idData.doctor_id}`);
+          const nameData = await nameResp.json();
+
+          if (nameData.doctor_name) {
+            setDoctorName(nameData.doctor_name);
+          }
+        }
+      } catch (err) {
+        console.error("Doctor data error:", err);
       }
     };
+
     fetchDoctorData();
   }, []);
 
-  // ---------------- PUBLIC TOKEN ----------------
+  // Save doctorData to backend
+  useEffect(() => {
+    if (!doctorData) return;
+
+    fetch(`https://generalchatbot-production.up.railway.app/save-doctor`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: doctorData.id,
+        name: doctorData.name,
+        message: doctorData.message,
+        public_token: doctorData.public_token,
+        session_token: doctorData.session_token,
+        specialization: doctorData.specialization,
+      }),
+    }).catch((err) => console.error("saveDoctor error:", err));
+  }, [doctorData]);
+
+  // Public token fetch
   useEffect(() => {
     if (!isPublicMode && sessionToken) {
       fetch(`${server}/dashboard/public-token?session_token=${sessionToken}`)
         .then((r) => r.json())
         .then((data) => {
-          if (data.publicToken) setPublicToken(data.publicToken);
-        });
+          if (!data.error) setPublicToken(data.publicToken);
+        })
+        .catch(console.error);
     }
   }, [isPublicMode, sessionToken]);
 
@@ -76,23 +151,19 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
       ? `${window.location.origin}/dashboard?publicToken=${publicToken}&sessionToken=${sessionToken}`
       : "";
 
-  // ---------------- QR CODE ----------------
+  // Fetch QR once ready
   useEffect(() => {
-    if (!publicToken || !sessionToken) return;
-
-    const genQR = async () => {
-      try {
-        const res = await fetch(`${server}/generate-qr-old/${publicToken}/${sessionToken}`);
-        const blob = await res.blob();
-        setQrCodeUrl(URL.createObjectURL(blob));
-      } catch {}
-    };
-    genQR();
+    if (!isPublicMode && publicToken && sessionToken) {
+      fetchQRCode(shareableUrl);
+    }
   }, [publicToken, sessionToken]);
 
-  // ---------------- TIMERS ----------------
+  // Timer logic
   useEffect(() => {
-    if (!patients.length) return setTimers({});
+    if (!patients.length) {
+      setTimers({});
+      return;
+    }
 
     const initial = {};
     for (let i = 1; i < patients.length; i++) {
@@ -102,57 +173,61 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
 
     const interval = setInterval(() => {
       setTimers((prev) => {
-        const next = { ...prev };
-        Object.keys(next).forEach((k) => (next[k] = Math.max(next[k] - 1, 0)));
-        return next;
+        const updated = {};
+        Object.keys(prev).forEach((k) => {
+          updated[k] = Math.max(prev[k] - 1, 0);
+        });
+        return updated;
       });
     }, 1000);
 
     return () => clearInterval(interval);
   }, [patients, averageInspectionTime]);
 
-  // ---------------- WEBSOCKET ----------------
+  // WebSocket
   useEffect(() => {
     if (wsRef.current) return;
 
-    const search = new URLSearchParams(window.location.search);
-    const token = isPublicMode ? search.get("sessionToken") : sessionToken;
+    const searchParams = new URLSearchParams(window.location.search);
+    const extractedSession = searchParams.get("sessionToken") || "";
+    const resolvedToken = isPublicMode ? extractedSession : sessionToken;
 
-    if (!token) return;
+    if (!resolvedToken) return;
 
-    const ws = new WebSocket(`wss://web-production-e5ae.up.railway.app/ws/${token}`);
+    const ws = new WebSocket(`wss://web-production-e5ae.up.railway.app/ws/${resolvedToken}`);
     wsRef.current = ws;
 
-    ws.onmessage = (ev) => {
-      const msg = JSON.parse(ev.data);
-      const { type, data } = msg;
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        const { type, data } = msg;
 
-      if (msg.doctor_id) return setDoctorId(msg.doctor_id);
+        if (type === "update_state") {
+          setPatients(data.patients || []);
+          setCurrentPatient(data.currentPatient ?? null);
+          setAverageInspectionTime(data.averageInspectionTime ?? 300);
+        }
 
-      if (data?.session_token && data.session_token !== token) return;
+        if (type === "update_notices") {
+          setNotices(data.notices || []);
+        }
 
-      if (type === "update_state") {
-        setPatients(data.patients || []);
-        setCurrentPatient(data.currentPatient || null);
-        setAverageInspectionTime(data.averageInspectionTime || 300);
-      }
-
-      if (type === "update_notices") {
-        setNotices(data.notices || []);
-      }
-
-      if (type === "connection_closed") {
-        alert("Doctor disconnected.");
-        navigate("/");
+        if (type === "connection_closed") {
+          alert("Doctor disconnected. Redirecting.");
+          navigate("/");
+        }
+      } catch (e) {
+        console.error("WS parse error:", e);
       }
     };
 
     return () => ws.close();
   }, [sessionToken, isPublicMode, navigate]);
 
-  // ---------------- ACTIONS ----------------
+  // WebSocket actions
   const addPatient = () => {
-    wsRef.current?.send(
+    if (!wsRef.current) return;
+    wsRef.current.send(
       JSON.stringify({
         type: "add_patient",
         patient: newPatientName,
@@ -163,7 +238,9 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
   };
 
   const ResetAll = () => {
-    wsRef.current?.send(JSON.stringify({ type: "reset_all", session_token: sessionToken }));
+    wsRef.current?.send(
+      JSON.stringify({ type: "reset_all", session_token: sessionToken })
+    );
   };
 
   const addNotice = () => {
@@ -173,14 +250,14 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
     setNewNotice("");
   };
 
-  const removeNotice = (i) => {
+  const removeNotice = (index) => {
     wsRef.current?.send(
-      JSON.stringify({ type: "remove_notice", index: i, session_token: sessionToken })
+      JSON.stringify({ type: "remove_notice", index, session_token: sessionToken })
     );
   };
 
   const markAsDone = () => {
-    if (!currentPatient) return;
+    if (!currentPatient || isPublicMode) return;
     wsRef.current?.send(JSON.stringify({ type: "mark_done", session_token: sessionToken }));
   };
 
@@ -189,58 +266,57 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
     setIsLoggedIn(false);
   };
 
-  // ---------------- UI ----------------
   return (
     <div className="mobile-container">
 
-      {/* HEADER */}
-      <header className="mobile-header">
-        <h2>{isPublicMode ? DoctorName || "Clinic" : doctorData?.name || "Dashboard"}</h2>
-      </header>
+      {/* Doctor name header */}
+      <h2 style={{ marginBottom: 12, marginTop: 8 }}>{DoctorName || "Clinic"}</h2>
 
-      {/* ---------------- COLLAPSIBLE SHARE LINK SECTION ---------------- */}
+      {/* -------- WAITING LIST (ALWAYS VISIBLE) -------- */}
+      <div className="compact-card">
+        <h3 style={{ marginTop: 0 }}>Waiting List</h3>
+
+        {!currentPatient && <p>No client is being served.</p>}
+
+        {patients.map((p, idx) => (
+          <div key={idx} className="patient-row">
+            <span>{p}</span>
+            <span>{formatTime(timers[idx] ?? 0)}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* -------- SHARE LINK + QR (ONLY WHEN LOGGED IN) -------- */}
       {!isPublicMode && (
-        <div className="collapsible">
+        <div className="compact-card">
           <button className="collapse-btn" onClick={() => setShowQR(!showQR)}>
-            Share Link & QR {showQR ? "▲" : "▼"}
+            Share Link & QR
+            <span>{showQR ? "▲" : "▼"}</span>
           </button>
-      
+
           {showQR && (
             <div className="collapse-content">
-              <input className="text-input full" readOnly value={shareableUrl} />
-      
+              <input className="text-input full" value={shareableUrl} readOnly />
               <button
                 className="btn ghost"
                 onClick={() => navigator.clipboard.writeText(shareableUrl)}
+                style={{ marginTop: 8 }}
               >
                 Copy
               </button>
-      
-              {qrCodeUrl && <img src={qrCodeUrl} alt="QR" className="qr-img" />}
+
+              {qrCodeUrl && <img className="qr-img" src={qrCodeUrl} alt="QR" />}
             </div>
           )}
         </div>
       )}
 
-
-      {/* ---------------- WAITING LIST ---------------- */}
-      <div className="card compact-card">
-        <h3>Waiting List</h3>
-        {!currentPatient && <p className="muted">No client is being served.</p>}
-
-        {patients.map((p, i) => (
-          <div key={i} className="list-row">
-            <span>{p}</span>
-            <span>{formatTime(timers[i] || 0)}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* ---------------- COLLAPSIBLE ACTIONS ---------------- */}
+      {/* -------- ACTIONS -------- */}
       {!isPublicMode && (
-        <div className="collapsible">
+        <div className="compact-card">
           <button className="collapse-btn" onClick={() => setShowActions(!showActions)}>
-            Actions {showActions ? "▲" : "▼"}
+            Actions
+            <span>{showActions ? "▲" : "▼"}</span>
           </button>
 
           {showActions && (
@@ -251,17 +327,17 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
                 value={newPatientName}
                 onChange={(e) => setNewPatientName(e.target.value)}
               />
-              <button className="btn primary" onClick={addPatient}>
+              <button className="btn primary" onClick={addPatient} style={{ marginTop: 8 }}>
                 Add Client
               </button>
 
               {currentPatient && (
-                <button className="btn success" onClick={markAsDone}>
+                <button className="btn success" onClick={markAsDone} style={{ marginTop: 8 }}>
                   Done (Next)
                 </button>
               )}
 
-              <button className="btn warn" onClick={ResetAll}>
+              <button className="btn warn" onClick={ResetAll} style={{ marginTop: 8 }}>
                 Reset All
               </button>
             </div>
@@ -269,16 +345,17 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
         </div>
       )}
 
-      {/* ---------------- COLLAPSIBLE NOTICES ---------------- */}
-      <div className="collapsible">
+      {/* -------- NOTICES -------- */}
+      <div className="compact-card">
         <button className="collapse-btn" onClick={() => setShowNotices(!showNotices)}>
-          Notices {showNotices ? "▲" : "▼"}
+          Notices
+          <span>{showNotices ? "▲" : "▼"}</span>
         </button>
 
         {showNotices && (
           <div className="collapse-content">
             {notices.map((n, i) => (
-              <div key={i} className="list-row">
+              <div key={i} className="notice-row">
                 <span>{n}</span>
                 {!isPublicMode && (
                   <button className="btn small danger" onClick={() => removeNotice(i)}>
@@ -292,11 +369,11 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
               <>
                 <textarea
                   className="text-area"
+                  placeholder="Write a notice..."
                   value={newNotice}
                   onChange={(e) => setNewNotice(e.target.value)}
-                  placeholder="Write a new notice..."
                 />
-                <button className="btn primary" onClick={addNotice}>
+                <button className="btn primary" onClick={addNotice} style={{ marginTop: 8 }}>
                   Add Notice
                 </button>
               </>
@@ -305,14 +382,15 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
         )}
       </div>
 
-      {/* ---------------- COLLAPSIBLE KNOWLEDGE BASE UPLOAD ---------------- */}
+      {/* -------- KNOWLEDGE BASE -------- */}
       {!isPublicMode && (
-        <div className="collapsible">
-          <button className="collapse-btn" onClick={() => setShowKnowledge(!showKnowledge)}>
-            Knowledge Base Upload {showKnowledge ? "▲" : "▼"}
+        <div className="compact-card">
+          <button className="collapse-btn" onClick={() => setShowKB(!showKB)}>
+            Knowledge Base Upload
+            <span>{showKB ? "▲" : "▼"}</span>
           </button>
 
-          {showKnowledge && (
+          {showKB && (
             <div className="collapse-content">
               <KnowledgeBaseUpload_clinic doctorData={doctorData} />
             </div>
@@ -320,14 +398,15 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
         </div>
       )}
 
-      {/* ---------------- COLLAPSIBLE API USAGE ---------------- */}
+      {/* -------- API USAGE -------- */}
       {!isPublicMode && (
-        <div className="collapsible">
-          <button className="collapse-btn" onClick={() => setShowAPI(!showAPI)}>
-            API Usage {showAPI ? "▲" : "▼"}
+        <div className="compact-card">
+          <button className="collapse-btn" onClick={() => setShowApiUsage(!showApiUsage)}>
+            API Usage
+            <span>{showApiUsage ? "▲" : "▼"}</span>
           </button>
 
-          {showAPI && (
+          {showApiUsage && (
             <div className="collapse-content">
               <ApiUsage doctorData={doctorData} />
             </div>
@@ -335,11 +414,47 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
         </div>
       )}
 
-      {/* ---------------- LOGOUT ---------------- */}
+      {/* -------- LOGOUT -------- */}
       {!isPublicMode && (
-        <button className="btn neutral logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="compact-card">
+          <button className="btn neutral" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      )}
+
+      {/* -------- PUBLIC CHAT MODE -------- */}
+      {isPublicMode && (
+        <>
+          <button className="chat-toggle" onClick={toggleChat}>
+            {isChatOpen ? "Close Chat" : "Chat with us"}
+          </button>
+
+          {isChatOpen && (
+            <div className="chat-window">
+              <div className="chat-messages">
+                {messages.map((m, i) => (
+                  <div key={i} className={`chat-bubble ${m.sender}`}>
+                    {m.text}
+                  </div>
+                ))}
+              </div>
+
+              <div className="chat-input-area">
+                <input
+                  className="text-input"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  placeholder="Type a message..."
+                />
+                <button className="btn primary" onClick={sendMessage}>
+                  Send
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
