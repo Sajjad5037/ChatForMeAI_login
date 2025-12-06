@@ -1,228 +1,147 @@
-/* --------------------------------------------------------
-   CLEAN LIGHT THEME (Material-style)
-   Optimized for Desktop + Mobile
---------------------------------------------------------- */
+/* ========= MOBILE-FIRST CLEAN UI ========= */
 
-:root {
-  --bg: #f5f7fa;
-  --card-bg: #ffffff;
-  --text: #222;
-  --muted: #6f7a87;
-  --accent: #1976d2;
-  --accent-light: #2196f3;
-  --border: rgba(0,0,0,0.08);
-  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+.mobile-container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 14px;
+  font-family: system-ui, Inter, sans-serif;
 }
 
-/* Global -------------------------------------------------- */
-
-body {
-  margin: 0;
-  background: var(--bg);
-  font-family: Inter, system-ui, -apple-system, Arial;
-  color: var(--text);
-}
-
-/* Main container ----------------------------------------- */
-
-.dashboard-container {
-  max-width: 900px;
-  margin: auto;
-  padding: 16px;
-}
-
-/* Header -------------------------------------------------- */
-
-.dashboard-header {
-  margin-bottom: 10px;
-}
-
-.dashboard-title {
-  font-size: 1.8rem;
-  margin: 0;
-  font-weight: 700;
-}
-
-/* Meta Cards --------------------------------------------- */
-
-.meta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 14px 0 22px;
-}
-
-.meta-card {
-  background: var(--card-bg);
+/* --- Cards --- */
+.compact-card {
+  background: #ffffff;
   border-radius: 10px;
-  padding: 12px 16px;
-  box-shadow: var(--shadow);
-  flex: 1;
-  min-width: 170px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.meta-title {
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.meta-value {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-top: 4px;
-}
-
-/* Collapsible Sections ----------------------------------- */
-
-.collapse-section {
-  margin-bottom: 14px;
-}
-
+/* --- Collapsible Buttons --- */
 .collapse-btn {
   width: 100%;
-  padding: 12px 14px;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  font-weight: 600;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: var(--shadow);
-}
-
-.collapse-btn span {
-  font-size: 1.02rem;
-}
-
-.collapse-content {
-  background: var(--card-bg);
-  margin-top: 6px;
-  padding: 14px;
-  border-radius: 10px;
-  box-shadow: var(--shadow);
-}
-
-/* Waiting List -------------------------------------------- */
-
-.patient-row {
-  background: var(--card-bg);
-  padding: 10px 12px;
+  padding: 12px;
+  background: #f4f4f4;
   border-radius: 8px;
-  box-shadow: var(--shadow);
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: left;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  cursor: pointer;
 }
 
-.patient-wait {
-  color: var(--accent);
-  font-weight: 600;
+/* --- Collapsible Content --- */
+.collapse-content {
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Inputs --------------------------------------------------- */
+/* --- Inputs --- */
+.text-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
 
-.text-input,
+.text-input.full {
+  width: 100%;
+}
+
 .text-area {
   width: 100%;
-  padding: 10px 12px;
-  background: var(--card-bg);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  font-size: 1rem;
-  margin-bottom: 10px;
-}
-
-.text-input::placeholder {
-  color: #999;
-}
-
-.text-area {
+  padding: 10px;
   min-height: 70px;
-  resize: vertical;
+  border-radius: 8px;
+  border: 1px solid #ddd;
 }
 
-/* Buttons -------------------------------------------------- */
-
+/* --- Buttons --- */
 .btn {
-  padding: 10px 14px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: none;
   font-weight: 600;
   cursor: pointer;
-  font-size: 1rem;
-  margin-right: 6px;
 }
 
 .btn.primary {
-  background: var(--accent);
+  background: #2196f3;
   color: white;
 }
 
 .btn.success {
-  background: #2e7d32;
+  background: #4caf50;
   color: white;
 }
 
 .btn.warn {
-  background: #c62828;
+  background: #f44336;
   color: white;
 }
 
 .btn.ghost {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--muted);
+  background: #eeeeee;
+}
+
+.btn.neutral {
+  background: #ddd;
+  width: 100%;
+}
+
+/* --- Patient Row --- */
+.patient-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 1rem;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+/* --- Notices --- */
+.notice-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #eee;
 }
 
 .btn.small {
-  padding: 6px 10px;
+  padding: 4px 6px;
   font-size: 0.85rem;
 }
 
-/* Notice Board -------------------------------------------- */
-
-.notice-row {
-  background: var(--card-bg);
-  padding: 10px 12px;
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
+.btn.danger {
+  background: #e53935;
+  color: white;
 }
 
-.notice-form {
-  margin-top: 10px;
-}
-
-/* Share & QR ---------------------------------------------- */
-
-.qr-anchor {
-  color: var(--accent);
-  text-decoration: underline;
-}
-
+/* --- QR Image --- */
 .qr-img {
-  width: 160px;
+  width: 180px;
   margin-top: 10px;
+  display: block;
 }
 
-/* Chat UI -------------------------------------------------- */
-
+/* --- Chat UI --- */
 .chat-toggle {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  background: var(--accent);
+  background: #2196f3;
   color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 50px;
+  padding: 12px 16px;
+  border-radius: 999px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border: none;
   cursor: pointer;
+  z-index: 2000;
 }
 
 .chat-window {
@@ -231,55 +150,46 @@ body {
   left: 20px;
   width: 300px;
   height: 400px;
-  background: var(--card-bg);
+  background: white;
   border-radius: 12px;
-  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  z-index: 2000;
 }
 
 .chat-messages {
   flex: 1;
-  padding: 12px;
+  padding: 10px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .chat-bubble {
-  max-width: 80%;
   padding: 8px 12px;
-  background: #e3f2fd;
   border-radius: 10px;
+  max-width: 75%;
+  line-height: 1.3;
+  font-size: 0.9rem;
 }
 
 .chat-bubble.user {
-  background: var(--accent);
-  color: white;
   align-self: flex-end;
+  background: #2196f3;
+  color: white;
+}
+
+.chat-bubble.bot {
+  align-self: flex-start;
+  background: #eaeaea;
 }
 
 .chat-input-area {
-  padding: 10px;
-  border-top: 1px solid var(--border);
   display: flex;
-  gap: 8px;
-}
-
-/* Mobile Optimizations ------------------------------------ */
-
-@media (max-width: 600px) {
-  .dashboard-container {
-    padding: 10px;
-  }
-
-  .collapse-btn {
-    padding: 10px;
-  }
-
-  .meta-row {
-    flex-direction: column;
-  }
+  padding: 10px;
+  gap: 6px;
+  border-top: 1px solid #ddd;
 }
