@@ -71,7 +71,7 @@ export default function BusinessChatbot({ doctorData }) {
   useEffect(() => {
     if (!doctorData) return;
 
-    fetch(`${server2}/api/whatsapp-knowledge-base/list?user_id=${doctorData.id}`)
+    fetch(`${server}/api/whatsapp-knowledge-base/list?user_id=${doctorData.id}`)
       .then((res) => res.json())
       .then((data) => {
         setDocuments(data.documents || []);
