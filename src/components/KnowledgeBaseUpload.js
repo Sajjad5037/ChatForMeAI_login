@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import "./KnowledgeBaseUpload.css";
 
-const KnowledgeBaseUpload = ({ doctorData }) => {
+const KnowledgeBaseUpload = ({
+  doctorData,
+  uploadMode,            // coming from parent
+  selectedDocumentId     // coming from parent
+}) => {
+
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // New states for document system
-  const [uploadMode, setUploadMode] = useState("new");         // "new" or "replace"
-  const [selectedDocumentId, setSelectedDocumentId] = useState(null);
   const [documentTitle, setDocumentTitle] = useState("");
 
   const server = "https://web-production-e5ae.up.railway.app";
@@ -18,68 +20,15 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
     setMessage("");
   };
 
-  /*  
-  -------------------------------------------------------------
-  🚫 OLD handleUpload (COMMENTED OUT)
-  -------------------------------------------------------------
-
-  const handleUpload = async () => {
-    if (!file) {
-      setMessage("Please select a PDF file first.");
-      return;
-    }
-    if (file.type !== "application/pdf") {
-      setMessage("Only PDF files are allowed.");
-      return;
-    }
-
-    if (!doctorData || !doctorData.id) {
-      setMessage("User ID is missing. Cannot upload.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("user_id", doctorData.id.toString());
-
-    try {
-      setUploading(true);
-      setMessage("");
-
-      const response = await fetch(`${server}/api/whatsapp-knowledge-base/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setMessage(`✅ Knowledge base uploaded successfully! ID: ${data.knowledge_base_id}`);
-        setFile(null);
-      } else {
-        let errorText = "Unknown error";
-        try {
-          const errorData = await response.json();
-          errorText = errorData.detail || errorText;
-        } catch {}
-        setMessage(`❌ Upload failed: ${errorText}`);
-      }
-    } catch (error) {
-      console.error("Upload error:", error);
-      setMessage("⚠️ Network error. Please try again later.");
-    } finally {
-      setUploading(false);
-    }
-  };
-  -------------------------------------------------------------
-  END OLD
-  -------------------------------------------------------------
-  */
-
   // ============================================================
-  // ⭐ NEW HANDLE UPLOAD — SUPPORTS NEW + REPLACE MODES
+  // ⭐ HANDLE UPLOAD — NEW + REPLACE MODES
   // ============================================================
   const handleUpload = async () => {
-    console.log("⚡ New handleUpload triggered");
+    console.log("⚡ New handleUpload triggered with:", {
+      uploadMode,
+      selectedDocumentId,
+      documentTitle
+    });
 
     // --- File validations ---
     if (!file) {
@@ -101,7 +50,7 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("user_id", doctorData.id.toString());
-    formData.append("mode", uploadMode); // "new" or "replace"
+    formData.append("mode", uploadMode);   // ALWAYS passed from parent
 
     if (uploadMode === "replace") {
       if (!selectedDocumentId) {
@@ -115,13 +64,10 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
       formData.append("document_title", documentTitle);
     }
 
-    console.log("📤 Upload Payload:", {
-      user_id: doctorData.id,
-      uploadMode,
-      selectedDocumentId,
-      documentTitle,
-      filename: file.name,
-    });
+    console.log("📤 Final FormData Payload:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": ", pair[1]);
+    }
 
     try {
       setUploading(true);
@@ -141,12 +87,11 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
       }
 
       setMessage(
-        `✅ Document uploaded successfully! Document ID: ${data.document_id} | Chunks created: ${data.chunks}`
+        `✅ Document uploaded! ID: ${data.document_id} | Chunks: ${data.chunks}`
       );
 
       // Reset UI
       setFile(null);
-      setSelectedDocumentId(data.document_id);
 
     } catch (err) {
       console.error("❌ Upload error:", err);
@@ -174,41 +119,6 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
         className="title-input"
       />
 
-      {/* Mode selection */}
-      <div className="upload-mode-selector">
-        <label>
-          <input
-            type="radio"
-            value="new"
-            checked={uploadMode === "new"}
-            onChange={() => setUploadMode("new")}
-          />
-          Upload New Document
-        </label>
-
-        <label>
-          <input
-            type="radio"
-            value="replace"
-            checked={uploadMode === "replace"}
-            onChange={() => setUploadMode("replace")}
-          />
-          Replace Existing
-        </label>
-      </div>
-
-      {/* Document ID input (used when replacing) */}
-      {uploadMode === "replace" && (
-        <input
-          type="number"
-          placeholder="Document ID to replace"
-          value={selectedDocumentId || ""}
-          onChange={(e) => setSelectedDocumentId(e.target.value)}
-          className="document-id-input"
-          disabled={uploading}
-        />
-      )}
-
       {/* File input */}
       <input
         type="file"
@@ -233,7 +143,6 @@ const KnowledgeBaseUpload = ({ doctorData }) => {
           href="https://www.imagetotext.info/text-to-pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="convert-link"
           style={{ color: "#007bff", cursor: "pointer", textDecoration: "underline" }}
         >
           Convert text to PDF
