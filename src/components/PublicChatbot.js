@@ -93,7 +93,7 @@ export default function PublicChatbot({ publicToken, server2 }) {
     try {
       console.log("DEBUG: Sending message to /api/rag-chat");
 
-      const res = await fetch(`${backendUrl}/api/chat-whatsapp`, {
+      const res = await fetch(`${backendUrl}/api/rag-chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
