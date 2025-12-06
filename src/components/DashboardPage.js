@@ -288,27 +288,45 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
 
       {/* -------- SHARE LINK + QR (ONLY WHEN LOGGED IN) -------- */}
       {!isPublicMode && (
-        <div className="compact-card">
+        <div className="collapsible">
           <button className="collapse-btn" onClick={() => setShowQR(!showQR)}>
-            Share Link & QR
-            <span>{showQR ? "▲" : "▼"}</span>
+            Share Link & QR {showQR ? "▲" : "▼"}
           </button>
-
+        
           {showQR && (
-            <div className="collapse-content">
-              <input className="text-input full" value={shareableUrl} readOnly />
+            <div className="collapse-content" style={{ display: "block" }}>
+              <input
+                className="text-input full"
+                readOnly
+                value={shareableUrl}
+              />
+        
               <button
                 className="btn ghost"
                 onClick={() => navigator.clipboard.writeText(shareableUrl)}
-                style={{ marginTop: 8 }}
               >
                 Copy
               </button>
-
-              {qrCodeUrl && <img className="qr-img" src={qrCodeUrl} alt="QR" />}
+        
+              {/* 🔥 Force QR to render if URL exists */}
+              {qrCodeUrl ? (
+                <img
+                  src={qrCodeUrl}
+                  alt="QR"
+                  className="qr-img"
+                  style={{
+                    display: "block",
+                    marginTop: "14px",
+                    width: "200px"
+                  }}
+                />
+              ) : (
+                <p style={{ marginTop: "10px", color: "#888" }}>Generating QR…</p>
+              )}
             </div>
           )}
         </div>
+
       )}
 
       {/* -------- ACTIONS -------- */}
