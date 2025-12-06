@@ -1,15 +1,17 @@
-/* ========= MOBILE-FIRST CLEAN UI (IMPROVED) ========= */
+/* ========= FULL-WIDTH DASHBOARD UI (DESKTOP + MOBILE) ========= */
 
+/* Main container now spans entire screen */
 .mobile-container {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 16px;
+  max-width: none !important;     /* FULL WIDTH */
+  padding: 16px 18px;
+  margin: 0;
   font-family: system-ui, Inter, sans-serif;
+  box-sizing: border-box;
 }
 
 /* ---------------------------------------- */
-/* CARDS                                     */
+/* CARDS (expand full width)                */
 /* ---------------------------------------- */
 .compact-card {
   background: #ffffff;
@@ -20,40 +22,41 @@
     0 1px 2px rgba(0,0,0,0.04),
     0 3px 6px rgba(0,0,0,0.07);
   width: 100%;
+  box-sizing: border-box;
 }
 
 /* ---------------------------------------- */
-/* COLLAPSIBLE SECTIONS                      */
+/* COLLAPSIBLE BUTTON SECTIONS              */
 /* ---------------------------------------- */
 .collapse-btn {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   background: #f5f5f5;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   text-align: left;
   display: flex;
   justify-content: space-between;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s;
 }
 
 .collapse-btn:hover {
-  background: #ececec;
+  background: #ebebeb;
 }
 
 .collapse-content {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-top: 10px;
-
   box-shadow:
     0 1px 2px rgba(0,0,0,0.05),
     0 2px 8px rgba(0,0,0,0.08);
+  box-sizing: border-box;
 }
 
 /* ---------------------------------------- */
@@ -65,8 +68,9 @@
   border-radius: 10px;
   border: 1px solid #dcdcdc;
   font-size: 1rem;
-  background: #fff;
+  background: white;
   color: #333;
+  box-sizing: border-box;
 }
 
 .text-input:focus {
@@ -74,25 +78,21 @@
   box-shadow: 0 0 0 3px rgba(33,150,243,0.15);
 }
 
-.text-input.full {
-  width: 100%;
-}
-
 .text-area {
   width: 100%;
   padding: 12px;
-  min-height: 80px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  font-size: 1rem;
+  min-height: 90px;
   resize: vertical;
+  box-sizing: border-box;
 }
 
 /* ---------------------------------------- */
 /* BUTTONS                                   */
 /* ---------------------------------------- */
 .btn {
-  padding: 10px 14px;
+  padding: 12px 14px;
   border-radius: 10px;
   border: none;
   font-weight: 600;
@@ -126,13 +126,13 @@
 }
 
 .btn.neutral {
-  background: #e0e0e0;
+  background: #ddd;
   width: 100%;
 }
 
 .btn.small {
   padding: 6px 8px;
-  font-size: 0.85rem;
+  font-size: 0.86rem;
 }
 
 .btn.danger {
@@ -141,32 +141,22 @@
 }
 
 /* ---------------------------------------- */
-/* PATIENT LIST                              */
+/* LISTS                                     */
 /* ---------------------------------------- */
-.patient-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 4px;
-  font-size: 1rem;
-  border-bottom: 1px solid #efefef;
-}
-
-/* ---------------------------------------- */
-/* NOTICES                                   */
-/* ---------------------------------------- */
+.patient-row,
 .notice-row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 4px;
-  font-size: 0.95rem;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 10px 4px;
+  border-bottom: 1px solid #efefef;
+  font-size: 1rem;
 }
 
 /* ---------------------------------------- */
 /* QR IMAGE                                  */
 /* ---------------------------------------- */
 .qr-img {
-  width: 200px;
+  width: 220px;
   margin-top: 12px;
   display: block;
   border-radius: 8px;
@@ -182,10 +172,10 @@
   background: #2196f3;
   color: white;
   padding: 14px 18px;
-  border-radius: 999px;
-  font-weight: 600;
+  border-radius: 100px;
   border: none;
   cursor: pointer;
+  font-weight: 600;
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
   z-index: 2000;
 }
@@ -194,14 +184,14 @@
   position: fixed;
   bottom: 85px;
   left: 20px;
-  width: 300px;
+  width: 320px;
   height: 420px;
   background: #ffffff;
   border-radius: 14px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
   overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
   z-index: 2000;
 }
 
@@ -218,8 +208,8 @@
   padding: 10px 14px;
   border-radius: 12px;
   max-width: 75%;
-  line-height: 1.35;
   font-size: 0.92rem;
+  line-height: 1.35;
 }
 
 .chat-bubble.user {
