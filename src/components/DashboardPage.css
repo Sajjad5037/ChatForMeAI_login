@@ -1,47 +1,46 @@
 /* =========================================================
-   DASHBOARD PAGE – CLEAN STRIPE / NOTION STYLE
-   Replace the entire DashboardPage.css with this
+   DASHBOARD PAGE – STRIPE PREMIUM STYLE (2025 EDITION)
+   FULL CSS REWRITE USING SOFT BLUE BACKGROUND (#eef3ff)
    ========================================================= */
 
 /* ---------- Global Layout ---------- */
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
-  background: #f5f7fb; /* soft dashboard grey */
+  background: #eef3ff; /* STRIPE BLUE-GREY */
   color: #111827;
 }
 
-/* Optional outer shell if you ever wrap it */
+/* Container */
 .dashboard-shell {
   display: flex;
   justify-content: center;
 }
 
-/* Main container used by your component */
 .dashboard-container,
 .mobile-container {
   width: 100%;
-  max-width: 1100px;   /* content column */
+  max-width: 1100px;
   margin: 0 auto;
   padding: 24px 16px 40px;
 }
 
-/* ---------- Header / Title (if used) ---------- */
+/* ---------- Headings ---------- */
 
 .dashboard-header {
   margin-bottom: 16px;
 }
 
 .dashboard-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0 0 4px;
+  font-size: 1.35rem;
+  font-weight: 650;
+  color: #0f172a;
+  margin-bottom: 6px;
 }
 
-/* ---------- Meta row above cards (if used) ---------- */
+/* ---------- Meta Row ---------- */
 
 .meta-row {
   display: flex;
@@ -54,39 +53,29 @@ body {
   flex: 1 1 180px;
   min-width: 180px;
   background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  padding: 10px 12px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  border-radius: 12px;
+  border: 1px solid #e8eaf0;
+  padding: 12px 14px;
+  box-shadow:
+    0 2px 4px rgba(30, 41, 59, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
 .meta-title {
   font-size: 0.8rem;
-  font-weight: 500;
   color: #6b7280;
+  margin-bottom: 4px;
 }
 
 .meta-value {
-  margin-top: 4px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #111827;
 }
 
 /* ---------- Generic Card Wrapper ---------- */
 
-.compact-card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin-bottom: 14px;
-  border: 1px solid #e5e7eb;
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.03),
-    0 0 0 1px rgba(15, 23, 42, 0.01);
-}
-
-/* Used by your top "Waiting List" card if it still uses .card */
+.compact-card,
 .card,
 .waiting-card,
 .notices-card,
@@ -95,75 +84,71 @@ body {
 .actions-card,
 .share-card {
   background: #ffffff;
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin-bottom: 14px;
-  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  border: 1px solid #e7e9f0;
   box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.03),
-    0 0 0 1px rgba(15, 23, 42, 0.01);
+    0 2px 6px rgba(15, 23, 42, 0.07),
+    0 0 0 1px rgba(15, 23, 42, 0.02);
 }
 
 .card-title {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #111827;
-  margin: 0 0 10px;
+  color: #0f172a;
+  margin-bottom: 12px;
 }
 
 /* ---------- Collapsible Sections ---------- */
 
 .collapse-btn {
   width: 100%;
-  padding: 12px 14px;
-  background: #f9fafb;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
+  padding: 12px 16px;
+  background: #f7f9ff;
+  border-radius: 12px;
+  border: 1px solid #dce1f0;
   font-weight: 600;
   font-size: 0.95rem;
   text-align: left;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
   cursor: pointer;
-  color: #111827;
+  color: #1e293b;
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
     transform 0.08s ease;
 }
 
-.collapse-btn span {
-  font-size: 0.9rem;
-}
-
 .collapse-btn:hover {
-  background: #f3f4f6;
-  border-color: #d1d5db;
+  background: #eef2ff;
+  border-color: #cdd4eb;
   transform: translateY(-1px);
 }
 
 .collapse-content {
-  width: 100%;
-  padding: 12px 14px;
-  margin-top: 8px;
+  padding: 14px 16px;
+  margin-top: 10px;
   background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border-radius: 12px;
+  border: 1px solid #e4e6ef;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 /* ---------- Inputs ---------- */
 
 .text-input {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid #cfd6e4;
   font-size: 0.95rem;
   background: #ffffff;
-  color: #111827;
+  color: #0f172a;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .text-input::placeholder {
@@ -173,97 +158,88 @@ body {
 .text-input:focus {
   outline: none;
   border-color: #2563eb;
-  box-shadow: 0 0 0 1px #2563eb33;
-}
-
-.text-input.full {
-  width: 100%;
+  box-shadow: 0 0 0 2px #2563eb33;
 }
 
 .text-area {
-  width: 100%;
-  padding: 10px 12px;
   min-height: 80px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  font-size: 0.95rem;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #cfd6e4;
   resize: vertical;
 }
 
 /* ---------- Buttons ---------- */
 
 .btn {
-  padding: 9px 14px;
+  padding: 10px 16px;
   border-radius: 999px;
   border: none;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.93rem;
   cursor: pointer;
   transition:
     background 0.15s ease,
-    transform 0.08s ease,
-    box-shadow 0.12s ease,
-    opacity 0.12s ease;
+    opacity 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.18s ease;
 }
 
 .btn:hover {
-  opacity: 0.92;
+  opacity: 0.95;
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 3px 7px rgba(15, 23, 42, 0.15);
 }
 
 .btn.primary {
   background: #2563eb;
-  color: #ffffff;
+  color: white;
 }
 
 .btn.success {
   background: #16a34a;
-  color: #ffffff;
+  color: white;
 }
 
-.btn.warn {
+.btn.warn,
+.btn.danger {
   background: #dc2626;
-  color: #ffffff;
+  color: white;
 }
 
 .btn.ghost {
-  background: #f3f4f6;
-  color: #111827;
+  background: #e2e8f0;
+  color: #1e293b;
 }
 
 .btn.neutral {
   background: #e5e7eb;
-  color: #111827;
+  color: #1e293b;
   width: 100%;
 }
 
 .btn.small {
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
 }
 
-.btn.danger {
-  background: #dc2626 !important;
-  color: #ffffff;
-}
+/* ---------- Waiting List ---------- */
 
-/* ---------- Waiting List / Patients ---------- */
-
-.patients-ul {
+.patients-ul,
+.notices-ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.patient-row {
+.patient-row,
+.notice-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 4px;
+  padding: 8px 2px;
   font-size: 0.95rem;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f2f4fa;
 }
 
 .patient-name {
@@ -275,40 +251,17 @@ body {
   color: #2563eb;
 }
 
-/* ---------- Notices ---------- */
-
-.notices-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.notice-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 4px;
-  font-size: 0.9rem;
-  border-bottom: 1px solid #f3f4f6;
-}
-
 /* ---------- QR Image ---------- */
 
 .qr-img {
   width: 200px;
   margin-top: 12px;
+  border-radius: 10px;
+  border: 1px solid #dbe1ef;
   display: block;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
 }
 
-/* ---------- Bottom Row (Logout) ---------- */
-
-.bottom-row {
-  margin-top: 20px;
-}
-
-/* ---------- Chat UI (public mode) ---------- */
+/* ---------- Chat UI ---------- */
 
 .chat-toggle {
   position: fixed;
@@ -316,13 +269,12 @@ body {
   left: 20px;
   background: #2563eb;
   color: white;
-  padding: 12px 16px;
+  padding: 12px 18px;
   border-radius: 999px;
   font-weight: 600;
-  border: none;
   cursor: pointer;
+  border: none;
   box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
-  z-index: 2000;
 }
 
 .chat-window {
@@ -335,9 +287,8 @@ body {
   border-radius: 14px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
   overflow: hidden;
-  z-index: 2000;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.28);
 }
 
 .chat-messages {
@@ -360,21 +311,21 @@ body {
 .chat-bubble.user {
   align-self: flex-end;
   background: #2563eb;
-  color: #ffffff;
+  color: white;
 }
 
 .chat-bubble.bot {
   align-self: flex-start;
-  background: #f3f4f6;
-  color: #111827;
+  background: #eef2ff;
+  color: #1e293b;
 }
 
 .chat-input-area {
-  display: flex;
   padding: 10px;
-  gap: 6px;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  display: flex;
+  gap: 8px;
+  background: #f8faff;
+  border-top: 1px solid #e1e4ef;
 }
 
 /* ---------- Utility ---------- */
@@ -384,7 +335,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* ---------- Responsive tweaks ---------- */
+/* ---------- Responsive ---------- */
 
 @media (max-width: 640px) {
   .dashboard-container,
