@@ -6,23 +6,23 @@ import ApiUsage from "./ApiUsage";
 import "./BusinessChatbot.css";
 
 export default function BusinessChatbot({ doctorData }) {
-  const server = "https://web-production-e5ae.up.railway.app";       // existing backend
-  const server2 = "https://generalchatbot-production.up.railway.app";            // NEW endpoints will use this
+  const server = "https://web-production-e5ae.up.railway.app";
+  const server2 = "https://generalchatbot-production.up.railway.app";
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-  // ----------------- URL MODE DETECTION -----------------
+  // ---------------- URL public mode detection ----------------
   const publicTokenFromUrl = queryParams.get("publicToken");
   const isPublicMode = Boolean(publicTokenFromUrl);
 
-  // ----------------- ADMIN SESSION -----------------
+  // ---------------- ADMIN SESSION ----------------
   const sessionToken =
     doctorData?.session_token ||
     localStorage.getItem("sessionToken") ||
     null;
 
-  // ----------------- STATE -----------------
+  // ---------------- SHARED STATE ----------------
   const [publicToken, setPublicToken] = useState(publicTokenFromUrl || null);
   const [shareLink, setShareLink] = useState("Fetching...");
   const [qrCode, setQrCode] = useState("");
@@ -30,7 +30,12 @@ export default function BusinessChatbot({ doctorData }) {
   const [requirePassword, setRequirePassword] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
 
-  // ----------------- FETCH PUBLIC TOKEN FOR ADMIN -----------------
+  // ---------------- KNOWLEDGE BASE STATES ----------------
+  const [documents, setDocuments] = useState([]);
+  const [uploadMode, setUploadMode] = useState("new"); // "new" | "replace"
+  const [selectedDocumentId, setSelectedDocumentId] = useState(null);
+
+  // ---------------- FETCH PUBLIC TOKEN FOR ADMIN ----------------
   useEffect(() => {
     if (isPublicMode || !sessionToken) return;
 
@@ -45,34 +50,36 @@ export default function BusinessChatbot({ doctorData }) {
       .catch(console.error);
   }, [isPublicMode, sessionToken, server]);
 
-  // ----------------- BUILD SHARE LINK -----------------
+  // ---------------- BUILD SHARE LINK ----------------
   useEffect(() => {
     if (!publicToken) return;
-
     const link = `${window.location.origin}/chatbot?publicToken=${publicToken}`;
     setShareLink(link);
   }, [publicToken]);
 
-  // ----------------- FETCH QR CODE -----------------
+  // ---------------- FETCH QR ----------------
   useEffect(() => {
     if (!publicToken) return;
 
-    const fetchQR = async () => {
-      try {
-        const res = await fetch(`${server}/generate-qr/${publicToken}`);
-        if (!res.ok) throw new Error("QR fetch failed");
-
-        const blob = await res.blob();
-        setQrCode(URL.createObjectURL(blob));
-      } catch (err) {
-        console.error("QR Error:", err);
-      }
-    };
-
-    fetchQR();
+    fetch(`${server}/generate-qr/${publicToken}`)
+      .then((res) => res.blob())
+      .then((blob) => setQrCode(URL.createObjectURL(blob)))
+      .catch(console.error);
   }, [publicToken, server]);
 
-  // ----------------- SAVE PASSWORD SETTINGS (NEW ENDPOINT → USE server2) -----------------
+  // ---------------- FETCH EXISTING DOCUMENTS FOR DOCTOR ----------------
+  useEffect(() => {
+    if (!doctorData) return;
+
+    fetch(`${server2}/api/whatsapp-knowledge-base/list?user_id=${doctorData.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setDocuments(data.documents || []);
+      })
+      .catch((err) => console.error("Docs Fetch Error:", err));
+  }, [doctorData]);
+
+  // ---------------- SAVE PASSWORD SETTINGS ----------------
   const handleSavePasswordSettings = async () => {
     try {
       const res = await fetch(`${server}/chatbot/settings`, {
@@ -94,27 +101,73 @@ export default function BusinessChatbot({ doctorData }) {
     }
   };
 
-  // ----------------- PUBLIC VIEW -----------------
+  // ---------------- PUBLIC VIEW ----------------
   if (isPublicMode) {
     return <PublicChatbot publicToken={publicTokenFromUrl} server={server} />;
   }
 
-  // ----------------- ADMIN VIEW -----------------
+  // ---------------- ADMIN VIEW ----------------
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
         <h1 className="dashboard-title">Business Chatbot Center</h1>
       </header>
 
-      {/* --- Knowledge Base Upload --- */}
-      {doctorData && (
-        <section className="card knowledge-card">
-          <h3 className="card-title">Upload Knowledge Base</h3>
-          <KnowledgeBaseUpload doctorData={doctorData} />
-        </section>
-      )}
+      {/* ---------------- KNOWLEDGE BASE SECTION ---------------- */}
+      <section className="card knowledge-card">
+        <h3 className="card-title">Knowledge Base</h3>
 
-      {/* --- Password Protection Settings --- */}
+        {/* ---------- Mode selection UI ---------- */}
+        <div className="mode-choice">
+          <label>
+            <input
+              type="radio"
+              value="new"
+              checked={uploadMode === "new"}
+              onChange={() => {
+                setUploadMode("new");
+                setSelectedDocumentId(null);
+              }}
+            />
+            Upload New PDF
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              value="replace"
+              checked={uploadMode === "replace"}
+              onChange={() => setUploadMode("replace")}
+            />
+            Replace Existing PDF
+          </label>
+        </div>
+
+        {/* Document dropdown when replacing */}
+        {uploadMode === "replace" && (
+          <select
+            className="text-input full"
+            value={selectedDocumentId || ""}
+            onChange={(e) => setSelectedDocumentId(Number(e.target.value))}
+          >
+            <option value="">Select document to replace</option>
+            {documents.map((doc) => (
+              <option key={doc.id} value={doc.id}>
+                {doc.title || `Document ${doc.id}`}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {/* Upload Component */}
+        <KnowledgeBaseUpload
+          doctorData={doctorData}
+          uploadMode={uploadMode}
+          selectedDocumentId={selectedDocumentId}
+        />
+      </section>
+
+      {/* ---------------- PASSWORD SETTINGS ---------------- */}
       <section className="card password-card">
         <h3 className="card-title">Access Settings</h3>
 
@@ -128,15 +181,13 @@ export default function BusinessChatbot({ doctorData }) {
         </div>
 
         {requirePassword && (
-          <div className="password-row">
-            <input
-              type="text"
-              placeholder="Enter access password"
-              value={passwordValue}
-              onChange={(e) => setPasswordValue(e.target.value)}
-              className="text-input full"
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Enter access password"
+            value={passwordValue}
+            onChange={(e) => setPasswordValue(e.target.value)}
+            className="text-input full"
+          />
         )}
 
         <button className="btn primary" onClick={handleSavePasswordSettings}>
@@ -144,16 +195,12 @@ export default function BusinessChatbot({ doctorData }) {
         </button>
       </section>
 
-      {/* --- Shareable Link & QR --- */}
+      {/* ---------------- SHARE LINK ---------------- */}
       <section className="card share-card">
         <h3 className="card-title">Shareable Link & QR</h3>
+
         <div className="share-row">
-          <input
-            type="text"
-            readOnly
-            value={shareLink}
-            className="text-input full"
-          />
+          <input type="text" readOnly value={shareLink} className="text-input full" />
           <button
             className="btn ghost"
             onClick={() => navigator.clipboard.writeText(shareLink)}
@@ -161,21 +208,15 @@ export default function BusinessChatbot({ doctorData }) {
             Copy
           </button>
 
-          {qrCode && (
-            <a className="qr-anchor" href={qrCode} target="_blank" rel="noreferrer">
-              Open QR
-            </a>
-          )}
+          {qrCode && <a className="qr-anchor" href={qrCode} target="_blank">Open QR</a>}
         </div>
       </section>
 
-      {/* --- API Usage --- */}
-      {doctorData && (
-        <section className="card api-usage-card">
-          <h3 className="card-title">API Usage</h3>
-          <ApiUsage doctorData={doctorData} />
-        </section>
-      )}
+      {/* ---------------- API USAGE ---------------- */}
+      <section className="card api-usage-card">
+        <h3 className="card-title">API Usage</h3>
+        <ApiUsage doctorData={doctorData} />
+      </section>
     </div>
   );
 }
