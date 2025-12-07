@@ -5,7 +5,7 @@ export default function ApiUsage({ doctorData }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const MONTHLY_LIMIT = 10; // USD
+  const MONTHLY_LIMIT = 5; // USD
 
   useEffect(() => {
     async function fetchUsage() {
