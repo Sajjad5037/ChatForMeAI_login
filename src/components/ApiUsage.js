@@ -10,7 +10,7 @@ export default function ApiUsage({ doctorData }) {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://your-backend.com/api/usage?doctorId=${doctorData.id}`
+          `https://web-production-e5ae.up.railway.app/api/usage?doctorId=${doctorData.id}`
         );
         if (!response.ok) throw new Error("Failed to fetch API usage");
         const data = await response.json();
