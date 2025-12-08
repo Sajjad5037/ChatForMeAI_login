@@ -362,16 +362,23 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
 
       {/* -------- NOTICES -------- */}
       <div className="compact-card">
-        <button className="collapse-btn" onClick={() => setShowNotices(!showNotices)}>
-          Share key notifications with your patients
-          <span>{showNotices ? "▲" : "▼"}</span>
-        </button>
 
-        {showNotices && (
+        {/* Doctors see the collapsible heading. Public users do not. */}
+        {!isPublicMode && (
+          <button className="collapse-btn" onClick={() => setShowNotices(!showNotices)}>
+            Share key notifications with your patients
+            <span>{showNotices ? "▲" : "▼"}</span>
+          </button>
+        )}
+      
+        {/* Public mode always shows notices. Doctors see it only when expanded. */}
+        {(isPublicMode || showNotices) && (
           <div className="collapse-content">
             {notices.map((n, i) => (
               <div key={i} className="notice-row">
                 <span>{n}</span>
+      
+                {/* Delete button only for doctors */}
                 {!isPublicMode && (
                   <button className="btn small danger" onClick={() => removeNotice(i)}>
                     ❌
@@ -379,7 +386,8 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
                 )}
               </div>
             ))}
-
+      
+            {/* Notice input only for doctors */}
             {!isPublicMode && (
               <>
                 <textarea
