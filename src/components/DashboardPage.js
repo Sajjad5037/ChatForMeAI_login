@@ -290,7 +290,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
       {!isPublicMode && (
         <div className="compact-card">
           <button className="collapse-btn" onClick={() => setShowQR(!showQR)}>
-            <span>Share Link & QR</span>
+            <span>Share Link and QR Code for Patient Access</span>
             <span>{showQR ? "▲" : "▼"}</span>
           </button>
         
@@ -330,7 +330,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
       {!isPublicMode && (
         <div className="compact-card">
           <button className="collapse-btn" onClick={() => setShowActions(!showActions)}>
-            Actions
+            Add Patients To Waiting List
             <span>{showActions ? "▲" : "▼"}</span>
           </button>
 
@@ -363,7 +363,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
       {/* -------- NOTICES -------- */}
       <div className="compact-card">
         <button className="collapse-btn" onClick={() => setShowNotices(!showNotices)}>
-          Notices
+          Share key notifications with your patients
           <span>{showNotices ? "▲" : "▼"}</span>
         </button>
 
@@ -401,7 +401,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
       {!isPublicMode && (
         <div className="compact-card">
           <button className="collapse-btn" onClick={() => setShowKB(!showKB)}>
-            Knowledge Base Upload
+            Upload Your Knowledge Base to Train the AI
             <span>{showKB ? "▲" : "▼"}</span>
           </button>
 
