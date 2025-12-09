@@ -261,12 +261,16 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
 
         {!currentPatient && <p>No client is being served.</p>}
 
-        {patients.map((p, idx) => (
-          <div key={idx} className="patient-row">
-            <span>{p}</span>
-            <span>{formatTime(timers[idx] ?? 0)}</span>
-          </div>
-        ))}
+        {patients.map((p, idx) => {
+          const timeLeft = timers[String(idx)] ?? 0;
+          return (
+            <div key={idx} className="patient-row">
+              <span>{p}</span>
+              <span>{formatTime(timeLeft)}</span>
+            </div>
+          );
+        })}
+
       </div>
 
       {/* -------- SHARE LINK + QR (ONLY WHEN LOGGED IN) -------- */}
