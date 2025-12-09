@@ -159,30 +159,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
   }, [publicToken, sessionToken]);
 
   // Timer logic
-  useEffect(() => {
-    if (!patients.length) {
-      setTimers({});
-      return;
-    }
-
-    const initial = {};
-    for (let i = 1; i < patients.length; i++) {
-      initial[i] = averageInspectionTime * i;
-    }
-    setTimers(initial);
-
-    const interval = setInterval(() => {
-      setTimers((prev) => {
-        const updated = {};
-        Object.keys(prev).forEach((k) => {
-          updated[k] = Math.max(prev[k] - 1, 0);
-        });
-        return updated;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [patients, averageInspectionTime]);
+  
 
   // WebSocket
   useEffect(() => {
@@ -201,25 +178,31 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
       try {
         const msg = JSON.parse(event.data);
         const { type, data } = msg;
-
+    
         if (type === "update_state") {
           setPatients(data.patients || []);
           setCurrentPatient(data.currentPatient ?? null);
           setAverageInspectionTime(data.averageInspectionTime ?? 300);
         }
-
+    
         if (type === "update_notices") {
           setNotices(data.notices || []);
         }
-
+    
+        if (type === "update_timers") {
+          setTimers(data.timers || {});
+        }
+    
         if (type === "connection_closed") {
           alert("Doctor disconnected. Redirecting.");
           navigate("/");
         }
+    
       } catch (e) {
         console.error("WS parse error:", e);
       }
     };
+
 
     return () => ws.close();
   }, [sessionToken, isPublicMode, navigate]);
