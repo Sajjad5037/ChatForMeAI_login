@@ -193,8 +193,8 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
         }
     
         if (type === "update_timers") {
-          console.log("🟢 Received timers from backend:", data.timers);
-          setTimers(data.timers || {});
+          console.log("🟢 RECEIVED TIMERS:", msg.timers);
+          setTimers(msg.timers || {});
         }
     
         if (type === "connection_closed") {
