@@ -258,22 +258,28 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
 
       {/* Doctor name header */}
       <h2 style={{ marginBottom: 12, marginTop: 8 }}>{DoctorName || "Clinic"}</h2>
+      
 
       {/* -------- WAITING LIST -------- */}
       <div className="compact-card">
         <h3 style={{ marginTop: 0 }}>Waiting List</h3>
       
-        {!currentPatient && <p>No client is being served.</p>}
+        {patients.length === 0 && <p>No clients in queue.</p>}
       
-        {/* Show only patients AFTER the first one */}
-        {patients.slice(1).map((p, idx) => {
-          const timerIndex = idx + 1; // shift index because slice starts at 0
-          const timeLeft = timers[String(timerIndex)] ?? 0;
+        {patients.map((p, idx) => {
+          const isCurrent = idx === 0;        // first patient is current
+          const timeLeft = timers[String(idx)] ?? 0;
       
           return (
             <div key={idx} className="patient-row">
               <span>{p}</span>
-              <span>{formatTime(timeLeft)}</span>
+      
+              {/* Show different text for current patient */}
+              {isCurrent ? (
+                <span>Now Serving</span>
+              ) : (
+                <span>{formatTime(timeLeft)}</span>
+              )}
             </div>
           );
         })}
