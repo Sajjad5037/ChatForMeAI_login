@@ -30,6 +30,9 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
   const [input, setInput] = useState("");
 
   const wsRef = useRef(null);
+  useEffect(() => {
+    console.log("🔥 timers state updated:", timers);
+  }, [timers]);
 
   // Collapsible UI state
   const [showQR, setShowQR] = useState(false);
@@ -190,6 +193,7 @@ function DashboardPage({ setIsLoggedIn, doctorData }) {
         }
     
         if (type === "update_timers") {
+          console.log("🟢 Received timers from backend:", data.timers);
           setTimers(data.timers || {});
         }
     
