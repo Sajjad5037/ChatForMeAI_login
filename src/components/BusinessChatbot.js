@@ -20,6 +20,9 @@ export default function BusinessChatbot({ doctorData }) {
     null;
 
   const handleBuyTokens = async (plan) => {
+  console.log("DEBUG: doctorData at buy click =", doctorData);
+  console.log("DEBUG: doctorData.id =", doctorData?.id);
+  console.log("DEBUG: sessionToken =", sessionToken);
   try {
     const res = await fetch(`${server3}/create-payment`, {
       method: "POST",
