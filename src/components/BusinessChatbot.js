@@ -19,7 +19,7 @@ export default function BusinessChatbot({ doctorData }) {
 
   const handleBuyTokens = async (plan) => {
   try {
-    const res = await fetch(`${server}/billing/create-payment`, {
+    const res = await fetch(`${server}/create-payment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
