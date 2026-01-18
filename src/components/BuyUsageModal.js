@@ -1,3 +1,5 @@
+import "./BuyUsageModal.css";
+
 export default function BuyUsageModal({ onClose, onBuy }) {
   const plans = [
     { id: "basic", price: 5, tokens: "500,000" },
