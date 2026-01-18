@@ -2,12 +2,46 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import KnowledgeBaseUpload from "./KnowledgeBaseUpload";
 import PublicChatbot from "./PublicChatbot";
+import BuyUsageModal from "./BuyUsageModal";
+
+
 import ApiUsage from "./ApiUsage";
 import "./BusinessChatbot.css";
 
 export default function BusinessChatbot({ doctorData }) {
   const server = "https://web-production-e5ae.up.railway.app";
   const server2 = "https://generalchatbot-production.up.railway.app";
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const sessionToken =
+    doctorData?.session_token ||
+    localStorage.getItem("sessionToken") ||
+    null;
+
+  const handleBuyTokens = async (plan) => {
+  try {
+    const res = await fetch(`${server}/billing/create-payment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        session_token: sessionToken,
+        plan_id: plan.id,
+      }),
+    });
+
+    const data = await res.json();
+
+    // Stripe-style redirect
+    if (data.checkout_url) {
+      window.location.href = data.checkout_url;
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Failed to start payment");
+  }
+};
+
+
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -17,11 +51,7 @@ export default function BusinessChatbot({ doctorData }) {
   const isPublicMode = Boolean(publicTokenFromUrl);
 
   // ---------------- ADMIN SESSION ----------------
-  const sessionToken =
-    doctorData?.session_token ||
-    localStorage.getItem("sessionToken") ||
-    null;
-
+  
   // ---------------- SHARED STATE ----------------
   const [publicToken, setPublicToken] = useState(publicTokenFromUrl || null);
   const [shareLink, setShareLink] = useState("Fetching...");
@@ -218,8 +248,27 @@ export default function BusinessChatbot({ doctorData }) {
       {/* ---------------- API USAGE ---------------- */}
       <section className="card api-usage-card">
         <h3 className="card-title">API Usage</h3>
+      
         <ApiUsage doctorData={doctorData} />
+      
+        <div className="usage-actions">
+          <button
+            className="btn primary"
+            onClick={() => setShowBuyModal(true)}
+          >
+            Buy Usage Tokens
+          </button>
+        </div>
       </section>
+      {/* 🔽 ADD THIS HERE */}
+    {showBuyModal && (
+      <BuyUsageModal
+        onClose={() => setShowBuyModal(false)}
+        onBuy={handleBuyTokens}
+      />
+    )}
+
+        
     </div>
   );
 }
