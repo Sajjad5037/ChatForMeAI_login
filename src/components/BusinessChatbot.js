@@ -11,6 +11,8 @@ import "./BusinessChatbot.css";
 export default function BusinessChatbot({ doctorData }) {
   const server = "https://web-production-e5ae.up.railway.app";
   const server2 = "https://generalchatbot-production.up.railway.app";
+  const server2 = "https://usefulapis-production.up.railway.app";
+  
   const [showBuyModal, setShowBuyModal] = useState(false);
   const sessionToken =
     doctorData?.session_token ||
@@ -19,7 +21,7 @@ export default function BusinessChatbot({ doctorData }) {
 
   const handleBuyTokens = async (plan) => {
   try {
-    const res = await fetch(`${server}/create-payment`, {
+    const res = await fetch(`${server2}/create-payment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
