@@ -28,6 +28,7 @@ export default function BusinessChatbot({ doctorData }) {
       body: JSON.stringify({
         session_token: sessionToken,
         plan_id: plan.id,
+        doctor_id: doctorData?.id,
       }),
     });
 
